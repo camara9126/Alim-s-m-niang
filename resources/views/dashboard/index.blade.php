@@ -208,7 +208,7 @@
                 <!-- Stats Cards -->
                  <!-- 1er ligne -->
                 <div class="stats-grid">
-                    <div class="stat-card" style="background-color: #c5a8ff;">
+                    <div class="stat-card" style="background-color: #F8FAFC;">
                         <div class="stat-info">
                             <a href="{{ route('articles.index') }}">
                                 <h3>Articles</h3>
@@ -219,7 +219,7 @@
                             <i class="fas fa-box"></i>
                         </div>
                     </div>
-                    <div class="stat-card" style="background-color: #DBAC46;">
+                    <div class="stat-card" style="background-color: #E0F2FE;">
                         <div class="stat-info">
                             <a href="{{ route('clients.index') }}">
                                 <h3>Clients</h3>
@@ -231,7 +231,7 @@
                         </div>
                     </div>
                     
-                    <div class="stat-card" style="background-color: #F8F5DF;">
+                    <div class="stat-card" style="background-color: #DCFCE7;">
                         <div class="stat-info">
                             <a href="{{ route('commandes.create') }}">
                                 <h3 class="">factures</h3>
@@ -268,11 +268,11 @@
                             <i class="fas fa-box"></i>
                         </div>
                     </div>
-                    <div class="stat-card2" style="background-color: #EC6206;">
+                    <div class="stat-card2" style="background-color: #F3E8FF;">
                         <div class="stat-info">
                             <a href="{{ route('mouvements') }}">
-                                <h3 class="text-white">Stock</h3>
-                                <div class="number text-white">{{$mouvements->count()}} produits</div>
+                                <h3 class="">Stock</h3>
+                                <div class="number ">{{$mouvements->count()}} produits</div>
                             </a>    
                         </div>
                         <div class="stat-icon">
@@ -280,22 +280,22 @@
                         </div>
                     </div>
                     
-                    <div class="stat-card2" style="background-color: #11C6FF;">
+                    <div class="stat-card2" style="background-color: #FEF3C7;">
                         <div class="stat-info">
                             <a href="{{ route('bonCommande.create') }}">
-                                <h3 class="text-white">Bon commande</h3>
-                                <div class="number text-white">{{$bonCommandes->count()}}</div>
+                                <h3 class="">Bon commande</h3>
+                                <div class="number ">{{$bonCommandes->count()}}</div>
                             </a>
                         </div>
                         <div class="stat-icon">
                             <i class="fas fa-list"></i>
                         </div>
                     </div>
-                    <div class="stat-card2" style="background-color: #697345;">
+                    <div class="stat-card2" style="background-color: #FFEAE6;">
                         <div class="stat-info">
                             <a href="{{ route('devis.create') }}">
-                                <h3 class="text-white">Devis</h3>
-                                <div class="number text-white">{{$devis->count()}}</div>
+                                <h3 class="">Devis</h3>
+                                <div class="number ">{{$devis->count()}}</div>
                             </a>
                         </div>
                         <div class="stat-icon">
@@ -354,7 +354,7 @@
                                             </div>
                                         </td>
                                         <td>{{$a->nom}}</td>
-                                        <td>{{$a->categorie->nom}}</td>
+                                        <td>{{$a->categorie->nom ?? '-'}}</td>
                                         <td><strong>{{$a->prix_vente}} FCFA</strong></td>
                                         <td><span class="badge-success">{{$a->stock}} en stock</span></td>
                                         <td><span class="badge-{{$a->statut ? 'success' : 'warning'}}">{{$a->statut ? 'Publié' : 'En attente'}}</span></td>
