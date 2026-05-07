@@ -22,7 +22,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
 
-        Gate::define('caissier', [PermissionPolicy::class, 'gererVentes']);
-        Gate::define('administrateur', [PermissionPolicy::class, 'isAdmin']);
+       //
     }
 }

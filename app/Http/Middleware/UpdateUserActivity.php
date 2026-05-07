@@ -18,14 +18,7 @@ class UpdateUserActivity
      */
     public function handle(Request $request, Closure $next)
     {
-         if(Auth::check()) {
-            Cache::put(
-                'user-is-online-' .
-                Auth::id(),
-                            true,
-                            now()->addMinutes(2) // duree de presence
-            );
-        }
+        //
 
         return $next($request);
     }

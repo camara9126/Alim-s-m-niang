@@ -19,7 +19,7 @@
     $bonCommandes= Bon_commande::latest()->get();
 
 ?>
-       <aside class="sidebar" id="sidebar">
+        <aside class="sidebar">
             <div class="sidebar-header">
                 <h2>
                     @if($entreprise->logo)
@@ -33,7 +33,6 @@
 
             <nav class="sidebar-nav">
                 <ul>
-                    @if(request()->user()->role == 'administrateur')
                         <li>
                             <a href="{{ route('dashboard') }}" class="">
                                 <i class="fas fa-chart-pie"></i>
@@ -42,7 +41,6 @@
                         </li> 
 
                         <div class="sidebar-divider"></div>
-                    @endif
                     <li>
                         <a href="{{ route('articles.index') }}">
                             <i class="fas fa-box"></i>
@@ -140,7 +138,6 @@
                         </a>
                     </li>
 
-                    @if(request()->user()->role == 'administrateur')
                         <li>
                             <a href="{{ route('paiements.index') }}">
                                 <i class="fas fa-money-bill-wave"></i>
@@ -173,7 +170,6 @@
                                 <span>Utilisateur</span>
                             </a>
                         </li>
-                    @endif
                    <div class="sidebar-divider"></div>
 
                     <li>

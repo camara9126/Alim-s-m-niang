@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : mar. 21 avr. 2026 à 15:39
+-- Généré le : jeu. 07 mai 2026 à 14:15
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.1.25
 
@@ -18,8 +18,42 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de données : `alimentation`
+-- Base de données : `alimsmniang`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `achats`
+--
+
+CREATE TABLE `achats` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `reference` varchar(255) NOT NULL,
+  `fournisseur_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `total` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `statut` enum('annule','recu') NOT NULL DEFAULT 'recu',
+  `note` text DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `achat_detatils`
+--
+
+CREATE TABLE `achat_detatils` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `achat_id` bigint(20) UNSIGNED NOT NULL,
+  `article_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `quantite` int(11) NOT NULL,
+  `prix_unitaire` decimal(10,2) NOT NULL,
+  `total` decimal(10,2) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -29,15 +63,19 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `articles` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `fournisseur_id` bigint(20) UNSIGNED NOT NULL,
-  `nom` varchar(255) NOT NULL,
-  `image` varchar(255) NOT NULL,
-  `description` text DEFAULT NULL,
   `code` varchar(255) NOT NULL,
+  `reference` varchar(255) NOT NULL,
+  `nom` varchar(255) NOT NULL,
+  `slug` varchar(255) DEFAULT NULL,
+  `image` varchar(255) DEFAULT NULL,
+  `description` text DEFAULT NULL,
   `prix_achat` decimal(12,2) NOT NULL DEFAULT 0.00,
-  `prix_vente` decimal(12,2) NOT NULL DEFAULT 0.00,
-  `stock` int(11) NOT NULL DEFAULT 0,
-  `stock_min` int(11) NOT NULL DEFAULT 0,
+  `prix_vente` decimal(12,2) NOT NULL,
+  `stock` int(11) NOT NULL DEFAULT 100,
+  `stock_min` int(11) NOT NULL DEFAULT 10,
+  `fournisseur_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `magasin_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `categorie_id` bigint(20) UNSIGNED DEFAULT NULL,
   `statut` tinyint(1) NOT NULL DEFAULT 1,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -67,13 +105,16 @@ CREATE TABLE `article_depots` (
 CREATE TABLE `bon_commandes` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `reference` varchar(255) NOT NULL,
+  `fournisseur_id` bigint(20) UNSIGNED DEFAULT NULL,
   `total` decimal(10,2) NOT NULL DEFAULT 0.00,
   `statut` enum('en_attente','envoye','recu') NOT NULL DEFAULT 'en_attente',
   `date_commande` date NOT NULL,
   `note` text DEFAULT NULL,
+  `nom` varchar(255) DEFAULT NULL,
+  `matricule` varchar(255) DEFAULT NULL,
+  `converti_en_achat` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  `fournisseur_id` bigint(20) UNSIGNED NOT NULL
+  `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -124,14 +165,14 @@ CREATE TABLE `cache_locks` (
 --
 
 CREATE TABLE `categories` (
-  `id` int(11) NOT NULL,
+  `id` bigint(20) UNSIGNED NOT NULL,
   `nom` varchar(255) NOT NULL,
-  `slug` varchar(255) NOT NULL,
-  `description` text DEFAULT NULL,
   `image` varchar(255) DEFAULT NULL,
+  `slug` varchar(255) DEFAULT NULL,
+  `description` text DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -149,6 +190,13 @@ CREATE TABLE `clients` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Déchargement des données de la table `clients`
+--
+
+INSERT INTO `clients` (`id`, `nom`, `telephone`, `email`, `adresse`, `created_at`, `updated_at`) VALUES
+(1, 'Ndiaye', NULL, 'ndiaye1903oumar@gmail.com', NULL, '2026-05-07 10:31:26', '2026-05-07 10:31:26');
+
 -- --------------------------------------------------------
 
 --
@@ -162,8 +210,8 @@ CREATE TABLE `depenses` (
   `libelle` varchar(255) NOT NULL,
   `description` text DEFAULT NULL,
   `montant` decimal(15,2) NOT NULL,
-  `date_depense` date NOT NULL,
-  `mode_paiement` enum('cash','mobile_money','virement','cheque','autre') NOT NULL,
+  `date_depense` date DEFAULT NULL,
+  `mode_paiement` enum('cash','orange_money','wave','banque','autre') NOT NULL,
   `statut` enum('payee','annulee') NOT NULL DEFAULT 'payee',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -178,12 +226,13 @@ CREATE TABLE `depenses` (
 CREATE TABLE `devis` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `reference` varchar(255) NOT NULL,
-  `client_id` bigint(20) UNSIGNED NOT NULL,
+  `client_id` bigint(20) UNSIGNED DEFAULT NULL,
   `total` decimal(10,2) NOT NULL DEFAULT 0.00,
   `statut` enum('en_attente','valide','refuse') NOT NULL DEFAULT 'en_attente',
   `date_devis` date NOT NULL,
   `date_expiration` date DEFAULT NULL,
   `note` text DEFAULT NULL,
+  `converti_en_vente` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -215,9 +264,12 @@ CREATE TABLE `entreprises` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `nom` varchar(255) NOT NULL,
   `telephone` varchar(255) DEFAULT NULL,
+  `tel_2` varchar(255) DEFAULT NULL,
+  `tel_fixe` varchar(255) DEFAULT NULL,
   `adresse` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
   `logo` varchar(255) DEFAULT NULL,
-  `taux_tva` decimal(5,2) NOT NULL DEFAULT 18.00,
+  `taux_tva` decimal(5,2) NOT NULL DEFAULT 0.00,
   `ninea` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -227,8 +279,8 @@ CREATE TABLE `entreprises` (
 -- Déchargement des données de la table `entreprises`
 --
 
-INSERT INTO `entreprises` (`id`, `nom`, `telephone`, `adresse`, `logo`, `taux_tva`, `ninea`, `created_at`, `updated_at`) VALUES
-(1, 'Thiolom Gandiol', '784685236', 'marché Sor, Saint-Louis', NULL, 0.00, '06766515', '2026-04-21 10:57:33', '2026-04-21 10:22:04');
+INSERT INTO `entreprises` (`id`, `nom`, `telephone`, `tel_2`, `tel_fixe`, `adresse`, `email`, `logo`, `taux_tva`, `ninea`, `created_at`, `updated_at`) VALUES
+(1, 'Alimentation Serigne Mbaye Niang', '771234567', NULL, NULL, 'marche Sor', NULL, NULL, 0.00, NULL, '2026-05-07 12:06:15', '2026-05-07 12:06:15');
 
 -- --------------------------------------------------------
 
@@ -333,30 +385,26 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (1, '0001_01_01_000000_create_users_table', 1),
 (2, '0001_01_01_000001_create_cache_table', 1),
 (3, '0001_01_01_000002_create_jobs_table', 1),
-(4, '2026_03_25_113453_create_mouvement_stocks_table', 2),
-(5, '2026_03_25_133558_create_clients_table', 2),
-(6, '2026_03_25_141004_create_entreprises_table', 2),
-(7, '2026_03_25_142957_create_ventes_table', 2),
-(8, '2026_03_25_143343_create_vente_items_table', 2),
-(9, '2026_03_26_101106_create_paiements_table', 2),
-(10, '2026_03_26_115001_add_multiple_columns_to_ventes_table', 2),
-(11, '2026_03_26_115718_add_multiple_columns_to_vente_items_table', 2),
-(12, '2026_03_26_121650_create_recettes_table', 2),
-(13, '2026_03_26_122055_create_depenses_table', 2),
-(14, '2026_03_26_123145_add_column_to_paiements_table', 2),
-(15, '2026_03_26_140137_add_column_to_paiements_table', 2),
-(16, '2026_03_26_141749_create_devis_table', 2),
-(17, '2026_03_26_141855_create_devis_details_table', 2),
-(18, '2026_04_06_133846_create_bon_commandes_table', 2),
-(19, '2026_04_06_134631_create_fournisseurs_table', 2),
-(20, '2026_04_06_134844_add_fournisseur_id_to_bon_commandes_table', 2),
-(21, '2026_04_06_135016_create_bon_commande_details_table', 2),
-(22, '2026_04_13_115006_add_role_to_users_table', 2),
-(23, '2026_04_13_122515_add_statut_to_users_table', 2),
-(24, '2026_04_15_143800_create_magasins_table', 2),
-(25, '2026_04_15_145352_add_magasin_id_to_mouvement_stocks_table', 2),
-(26, '2026_04_16_092256_create_article_depots_table', 2),
-(27, '2026_04_16_093005_add_magasin_id_to_vente_items_table', 2);
+(4, '2026_03_24_134631_create_fournisseurs_table', 2),
+(5, '2026_03_24_134632_create_categories_table', 2),
+(6, '2026_03_24_143800_create_magasins_table', 2),
+(7, '2026_03_25_113453_create_mouvement_stocks_table', 3),
+(8, '2026_03_25_133558_create_clients_table', 3),
+(9, '2026_03_25_141004_create_entreprises_table', 3),
+(10, '2026_03_25_110040_create_session_caisses_table', 4),
+(11, '2026_03_25_093005_create_articles_table', 5),
+(12, '2026_03_25_142957_create_ventes_table', 5),
+(13, '2026_03_25_143343_create_vente_items_table', 5),
+(14, '2026_03_26_101106_create_paiements_table', 5),
+(15, '2026_03_26_121650_create_recettes_table', 5),
+(16, '2026_03_26_122055_create_depenses_table', 5),
+(17, '2026_03_26_141749_create_devis_table', 6),
+(18, '2026_03_26_141855_create_devis_details_table', 6),
+(19, '2026_04_06_133846_create_bon_commandes_table', 7),
+(20, '2026_04_06_135016_create_bon_commande_details_table', 7),
+(21, '2026_04_16_092256_create_article_depots_table', 7),
+(22, '2026_04_29_101953_create_achats_table', 7),
+(23, '2026_04_29_103532_create_achat_detatils_table', 7);
 
 -- --------------------------------------------------------
 
@@ -370,9 +418,9 @@ CREATE TABLE `mouvement_stocks` (
   `type` enum('entree','sortie') NOT NULL,
   `quantite` int(11) NOT NULL,
   `reference` varchar(255) DEFAULT NULL,
+  `magasin_id` bigint(20) UNSIGNED DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  `magasin_id` bigint(20) UNSIGNED DEFAULT NULL
+  `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -384,16 +432,18 @@ CREATE TABLE `mouvement_stocks` (
 CREATE TABLE `paiements` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `vente_id` bigint(20) UNSIGNED NOT NULL,
+  `user_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `entreprise_id` bigint(20) UNSIGNED DEFAULT NULL,
   `montant` decimal(15,2) NOT NULL,
   `mode_paiement` enum('cash','wave','orange_money','banque','autre') NOT NULL,
   `reference` varchar(255) NOT NULL,
-  `date_paiement` date NOT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
+  `date_paiement` date DEFAULT NULL,
   `statut` enum('valide','annule') NOT NULL DEFAULT 'valide',
   `motif` text DEFAULT NULL,
   `annule_par` bigint(20) UNSIGNED DEFAULT NULL,
-  `annule_le` timestamp NULL DEFAULT NULL
+  `annule_le` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -423,7 +473,7 @@ CREATE TABLE `recettes` (
   `montant` decimal(15,2) NOT NULL,
   `date_recette` date NOT NULL,
   `paiement_id` bigint(20) UNSIGNED DEFAULT NULL,
-  `mode_paiement` enum('cash','mobile_money','virement','cheque','autre') NOT NULL,
+  `mode_paiement` enum('cash','orange_money','wave','banque','autre') NOT NULL,
   `statut` enum('recu','annule') NOT NULL DEFAULT 'recu',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -449,11 +499,27 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('27qlEH8SgaFlS2ff3QORwXSxuEi9eJfjf5svCmo1', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiaGJUdFlNWHJHZ3BWQzczUWRlS2NDYUtWWDRTemxxMUY2aVJrWjhFMyI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6Mjc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwNS9sb2dpbiI7czo1OiJyb3V0ZSI7czo1OiJsb2dpbiI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fX0=', 1776770725),
-('4aPkcF4ivj1TmSBq59HV39Vyh4fTeGKH2QcCUCe6', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiNm12S1F5THBOaU5HQ2JZYzBybXJjVnFacmg5TkVmRjVnRjRYTGY3aiI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6Mjc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwNS91c2VycyI7czo1OiJyb3V0ZSI7czoxMToidXNlcnMuaW5kZXgiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjM6InVybCI7YToxOntzOjg6ImludGVuZGVkIjtzOjMwOiJodHRwOi8vMTI3LjAuMC4xOjgwMDUvcmVnaXN0ZXIiO31zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxO30=', 1776770690),
-('cbk4si1bBjOF6BzqCyPmnWHq13AquLkRrrKDexo6', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoieUhOdGt4V204Mk12ZXdHNThKWVZvU2xsaDNmbDRpenUxU0RYQ244MCI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6Mjc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwNS9sb2dpbiI7czo1OiJyb3V0ZSI7czo1OiJsb2dpbiI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fX0=', 1776770726),
-('ijmLw9127SeVyFhiXQbLOlc95AR3by56LqdfUlPb', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiekVDbm9LdjlvWk1nSm1rTHRtUk5WSlQ5YUpUS2V0YXNDY1RQSXVvdiI7czozOiJ1cmwiO2E6MDp7fXM6OToiX3ByZXZpb3VzIjthOjI6e3M6MzoidXJsIjtzOjI5OiJodHRwOi8vMTI3LjAuMC4xOjgwMDUvcmFwcG9ydCI7czo1OiJyb3V0ZSI7czo4OiJyYXBwb3J0cyI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjE7fQ==', 1776778465),
-('kXZFiSmhEn9aAC4qqIdUGv0y8iV9X1iUtD55JEh6', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoianQ4VE9RYkxGeVAxV3p2S2V6WWZBc2IxSElzZmtINTBNbEJjMTRKNyI7czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czoyNzoiaHR0cDovLzEyNy4wLjAuMTo4MDA1L3VzZXJzIjt9czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6Mjc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwNS91c2VycyI7czo1OiJyb3V0ZSI7czoxMToidXNlcnMuaW5kZXgiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1776770724);
+('9BRCy4KeQu5GqNB5YwyJ53RnCJhUGmUbS1ZVMrY6', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiYllVUHpXSFkzSXB4dWhoa3RMVEhxWVFpMXZnc1c2bFU4N1M4dUFKZCI7czozOiJ1cmwiO2E6MDp7fXM6OToiX3ByZXZpb3VzIjthOjI6e3M6MzoidXJsIjtzOjI3OiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvbG9naW4iO3M6NToicm91dGUiO3M6NToibG9naW4iO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxO30=', 1778152265),
+('IFIEvDkxlRs44AyFzNSwGaoA85mM2emp7ZUgTNVA', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiOVlJVEEzUjhuMEdOZ0h2bkZvaThyVkFLVVdBRW1OR1RvU29lVDRzOCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwNi9kYXNoYm9hcmQiO3M6NToicm91dGUiO3M6OToiZGFzaGJvYXJkIjt9czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTt9', 1778156051),
+('pUejnoDLW192JX50Gave4RkIqoxra61KPGDTNTxB', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.119.0 Chrome/142.0.7444.265 Electron/39.8.8 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiZnFqdDVLVHVKUHdXTXF4WkV3Z25TNE1HeXpGOWQxVHVPZjB6dW50cyI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMi9kYXNoYm9hcmQiO3M6NToicm91dGUiO3M6OToiZGFzaGJvYXJkIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTt9', 1778148918);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `session_caisses`
+--
+
+CREATE TABLE `session_caisses` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `user_id` bigint(20) UNSIGNED NOT NULL,
+  `opened_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `closed_at` timestamp NULL DEFAULT NULL,
+  `total_ventes` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `total_encaisse` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `nombre_ventes` int(11) NOT NULL DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -467,19 +533,19 @@ CREATE TABLE `users` (
   `email` varchar(255) NOT NULL,
   `email_verified_at` timestamp NULL DEFAULT NULL,
   `password` varchar(255) NOT NULL,
+  `statut` tinyint(1) NOT NULL DEFAULT 1,
+  `role` varchar(255) DEFAULT NULL,
   `remember_token` varchar(100) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  `role` varchar(255) DEFAULT NULL,
-  `statut` tinyint(1) NOT NULL DEFAULT 1
+  `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`, `role`, `statut`) VALUES
-(1, 'Amadou Camara', 'thiolomgandiol10@gmail.com', NULL, '$2y$12$HhGoaLyTxoMe5CkkTgiXV.AA5iNL.6qJGokFzBZbphkYm9xDT9m3y', NULL, '2026-04-21 08:39:19', '2026-04-21 10:22:46', 'administrateur', 1);
+INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `statut`, `role`, `remember_token`, `created_at`, `updated_at`) VALUES
+(1, 'Oumar Ndiaye', 'serignendiaye@gmail.com', NULL, '$2y$12$1oJ7HcWZvb5ktEnG9xOHzOfCjdNmqr96TDTnAB1DFt10W7o16HuSm', 1, 'administrateur', NULL, '2026-05-07 09:04:41', '2026-05-07 09:04:41');
 
 -- --------------------------------------------------------
 
@@ -489,16 +555,17 @@ INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `re
 
 CREATE TABLE `ventes` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `client_id` bigint(20) UNSIGNED NOT NULL,
+  `client_id` bigint(20) UNSIGNED DEFAULT NULL,
   `reference` varchar(255) NOT NULL,
   `date` date NOT NULL,
   `total` decimal(12,2) DEFAULT NULL,
+  `total_tva` decimal(12,2) DEFAULT NULL,
+  `total_ttc` decimal(12,2) DEFAULT NULL,
   `statut` enum('payee','impayee','partielle') NOT NULL DEFAULT 'impayee',
   `user_id` bigint(20) UNSIGNED NOT NULL,
+  `session_caisse_id` bigint(20) UNSIGNED DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  `total_tva` decimal(15,2) NOT NULL DEFAULT 0.00,
-  `total_ttc` decimal(15,2) NOT NULL DEFAULT 0.00
+  `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -511,15 +578,15 @@ CREATE TABLE `vente_items` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `vente_id` bigint(20) UNSIGNED NOT NULL,
   `article_id` bigint(20) UNSIGNED NOT NULL,
+  `magasin_id` bigint(20) UNSIGNED DEFAULT NULL,
   `quantite` int(11) NOT NULL,
   `prix_unitaire` decimal(10,2) NOT NULL,
+  `montant_tva` decimal(10,2) NOT NULL,
+  `total_ttc` decimal(10,2) NOT NULL,
+  `taux_tva` decimal(10,2) NOT NULL,
   `total` decimal(12,2) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  `taux_tva` decimal(5,2) NOT NULL DEFAULT 18.00,
-  `montant_tva` decimal(15,2) NOT NULL DEFAULT 0.00,
-  `total_ttc` decimal(15,2) NOT NULL DEFAULT 0.00,
-  `magasin_id` bigint(20) UNSIGNED DEFAULT NULL
+  `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -527,10 +594,30 @@ CREATE TABLE `vente_items` (
 --
 
 --
+-- Index pour la table `achats`
+--
+ALTER TABLE `achats`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `achats_reference_unique` (`reference`),
+  ADD KEY `achats_fournisseur_id_foreign` (`fournisseur_id`);
+
+--
+-- Index pour la table `achat_detatils`
+--
+ALTER TABLE `achat_detatils`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `achat_detatils_achat_id_foreign` (`achat_id`),
+  ADD KEY `achat_detatils_article_id_foreign` (`article_id`);
+
+--
 -- Index pour la table `articles`
 --
 ALTER TABLE `articles`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `articles_reference_unique` (`reference`),
+  ADD KEY `articles_fournisseur_id_foreign` (`fournisseur_id`),
+  ADD KEY `articles_magasin_id_foreign` (`magasin_id`),
+  ADD KEY `articles_categorie_id_foreign` (`categorie_id`);
 
 --
 -- Index pour la table `article_depots`
@@ -664,7 +751,9 @@ ALTER TABLE `mouvement_stocks`
 ALTER TABLE `paiements`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `paiements_reference_unique` (`reference`),
-  ADD KEY `paiements_vente_id_foreign` (`vente_id`);
+  ADD KEY `paiements_vente_id_foreign` (`vente_id`),
+  ADD KEY `paiements_user_id_foreign` (`user_id`),
+  ADD KEY `paiements_entreprise_id_foreign` (`entreprise_id`);
 
 --
 -- Index pour la table `password_reset_tokens`
@@ -690,6 +779,13 @@ ALTER TABLE `sessions`
   ADD KEY `sessions_last_activity_index` (`last_activity`);
 
 --
+-- Index pour la table `session_caisses`
+--
+ALTER TABLE `session_caisses`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `session_caisses_user_id_foreign` (`user_id`);
+
+--
 -- Index pour la table `users`
 --
 ALTER TABLE `users`
@@ -703,7 +799,8 @@ ALTER TABLE `ventes`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `ventes_reference_unique` (`reference`),
   ADD KEY `ventes_client_id_foreign` (`client_id`),
-  ADD KEY `ventes_user_id_foreign` (`user_id`);
+  ADD KEY `ventes_user_id_foreign` (`user_id`),
+  ADD KEY `ventes_session_caisse_id_foreign` (`session_caisse_id`);
 
 --
 -- Index pour la table `vente_items`
@@ -717,6 +814,18 @@ ALTER TABLE `vente_items`
 --
 -- AUTO_INCREMENT pour les tables déchargées
 --
+
+--
+-- AUTO_INCREMENT pour la table `achats`
+--
+ALTER TABLE `achats`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `achat_detatils`
+--
+ALTER TABLE `achat_detatils`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT pour la table `articles`
@@ -746,13 +855,13 @@ ALTER TABLE `bon_commande_details`
 -- AUTO_INCREMENT pour la table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT pour la table `clients`
 --
 ALTER TABLE `clients`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT pour la table `depenses`
@@ -806,7 +915,7 @@ ALTER TABLE `magasins`
 -- AUTO_INCREMENT pour la table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT pour la table `mouvement_stocks`
@@ -824,6 +933,12 @@ ALTER TABLE `paiements`
 -- AUTO_INCREMENT pour la table `recettes`
 --
 ALTER TABLE `recettes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `session_caisses`
+--
+ALTER TABLE `session_caisses`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
@@ -847,6 +962,27 @@ ALTER TABLE `vente_items`
 --
 -- Contraintes pour les tables déchargées
 --
+
+--
+-- Contraintes pour la table `achats`
+--
+ALTER TABLE `achats`
+  ADD CONSTRAINT `achats_fournisseur_id_foreign` FOREIGN KEY (`fournisseur_id`) REFERENCES `fournisseurs` (`id`) ON DELETE CASCADE;
+
+--
+-- Contraintes pour la table `achat_detatils`
+--
+ALTER TABLE `achat_detatils`
+  ADD CONSTRAINT `achat_detatils_achat_id_foreign` FOREIGN KEY (`achat_id`) REFERENCES `achats` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `achat_detatils_article_id_foreign` FOREIGN KEY (`article_id`) REFERENCES `articles` (`id`) ON DELETE CASCADE;
+
+--
+-- Contraintes pour la table `articles`
+--
+ALTER TABLE `articles`
+  ADD CONSTRAINT `articles_categorie_id_foreign` FOREIGN KEY (`categorie_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `articles_fournisseur_id_foreign` FOREIGN KEY (`fournisseur_id`) REFERENCES `fournisseurs` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `articles_magasin_id_foreign` FOREIGN KEY (`magasin_id`) REFERENCES `magasins` (`id`) ON DELETE CASCADE;
 
 --
 -- Contraintes pour la table `article_depots`
@@ -898,6 +1034,8 @@ ALTER TABLE `mouvement_stocks`
 -- Contraintes pour la table `paiements`
 --
 ALTER TABLE `paiements`
+  ADD CONSTRAINT `paiements_entreprise_id_foreign` FOREIGN KEY (`entreprise_id`) REFERENCES `entreprises` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `paiements_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `paiements_vente_id_foreign` FOREIGN KEY (`vente_id`) REFERENCES `ventes` (`id`) ON DELETE CASCADE;
 
 --
@@ -908,10 +1046,17 @@ ALTER TABLE `recettes`
   ADD CONSTRAINT `recettes_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
+-- Contraintes pour la table `session_caisses`
+--
+ALTER TABLE `session_caisses`
+  ADD CONSTRAINT `session_caisses_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
 -- Contraintes pour la table `ventes`
 --
 ALTER TABLE `ventes`
   ADD CONSTRAINT `ventes_client_id_foreign` FOREIGN KEY (`client_id`) REFERENCES `clients` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `ventes_session_caisse_id_foreign` FOREIGN KEY (`session_caisse_id`) REFERENCES `session_caisses` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `ventes_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --

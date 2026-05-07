@@ -23,6 +23,7 @@ use App\Models\Bon_commande;
 use App\Models\Categorie;
 use App\Models\Client;
 use App\Models\Devis;
+use App\Models\Entreprise;
 use App\Models\Magasin;
 use App\Models\Mouvement_stock;
 use App\Models\Vente;
@@ -30,26 +31,16 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
 
-    return view('auth.login');
+    return view('home');
 });
 
-Route::get('/boutique', function () {
+Route::get('last', function () {
 
-    $categories= Categorie::latest()->get();
-    $articles= Article::where('statut', true)->latest()->paginate(12);
-    $phares= Article::where('etiquette', 'nouveau')->where('statut', true)->latest()->get();
+    return 'LAST';
+})->middleware('auth');
 
-    return view('home.shop', compact('categories','articles','phares'));
-})->name('boutique');
 
-Route::get('/contact', function () {
-
-    $categories= Categorie::latest()->get();
-
-    return view('home.contact', compact('categories'));
-})->name('contact');
-
-Route::get('/test', function () {
+Route::get('test', function () {
      $clients = Client::latest()->get();
         $articles = Article::where('statut', true)->latest()->get();
         $magasins = Magasin::latest()->get();
@@ -58,26 +49,15 @@ Route::get('/test', function () {
 })->name('test');
 
 
-// Detail article
-Route::get('/article/{slug}', [HomeController::class, 'detail'])->name('detail');
-
-// Detail categorie
-Route::get('/category/{slug}', [HomeController::class, 'category'])->name('category');
-
-// Recherche Client 
-Route::get('/recherche', [HomeController::class, 'search'])->name('recherche');
-
-// Route Commande en ligne
-Route::post('/commande', [HomeController::class, 'commande'])->name('commande');
-
 // Route Parametre
-Route::get('/parametre', function() {
+Route::get('parametre', function() {
     return view('dashboard.parametre');
 })->name('parametre');
 
 
 // Route dashboard
-Route::get('/dashboard', function () {
+Route::get('dashboard', function () {
+    $entreprise= Entreprise::findOrFail(1);
     $categories= Categorie::latest()->get();
     $articles= Article::latest()->get();
     $article= Article::limit(5)->latest()->get();
@@ -98,7 +78,7 @@ Route::get('/dashboard', function () {
     $commandesMoisLabels = $commandesParJour->pluck('jour');
     $commandesMoisData = $commandesParJour->pluck('total');
 
-    return view('dashboard.index', compact('articles','categories','article','clients','commandes','devis','mouvements','bonCommandes','commandesMoisLabels','commandesMoisData','annee'));
+    return view('dashboard.index', compact('entreprise','articles','categories','article','clients','commandes','devis','mouvements','bonCommandes','commandesMoisLabels','commandesMoisData','annee'));
     
 })->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -110,59 +90,58 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile/{entreprise}', [ProfileController::class, 'entrepriseUpdate'])->name('entreprise.eUpdate');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/users', [ProfileController::class, 'user'])->name('users.index');
-    Route::post('/users', [ProfileController::class, 'userAdd'])->name('users.add');
+    Route::get('users', [ProfileController::class, 'user'])->name('users.index');
+    Route::post('users', [ProfileController::class, 'userAdd'])->name('users.add');
 
 });
 
 
 Route::middleware('auth')->group(function () {
-    Route::get('/rapport', [RapportController::class, 'rapports'])->name('rapports');
+    Route::get('rapport', [RapportController::class, 'rapports'])->name('rapports');
 });
 
 
 // Routes Articles et Categories
 Route::middleware('auth')->group(function () {
     // Route Categorie
-    Route::resource('/categorie', categorieController::class);
+    Route::resource('categorie', categorieController::class);
 
     // Recherche categorie par Admin
-    Route::get('/csearch', [categorieController::class, 'search'])->name('categorie.search');
+    Route::get('csearch', [categorieController::class, 'search'])->name('categorie.search');
 
     // Route Article
-    Route::resource('/articles', articleController::class);
+    Route::resource('articles', articleController::class);
 
     // Route Importation fichier articles - excel
-    Route::get('/import', [ArticleImportController::class, 'index'])->name('articles.import.page');
-    Route::post('/import', [ArticleImportController::class, 'import'])->name('articles.import');
+    Route::get('import', [ArticleImportController::class, 'index'])->name('articles.import.page');
+    Route::post('import', [ArticleImportController::class, 'import'])->name('articles.import');
 
     // Recheche article par Admin
-    Route::get('/asearch', [articleController::class, 'search'])->name('article.search');
+    Route::get('asearch', [articleController::class, 'search'])->name('article.search');
 
 });
 
 // Routes Mouvements et Magasin
 Route::middleware('auth')->group(function () {
-    Route::get('/mouvements', [MouvementController::class, 'index'])->name('mouvements');
-    Route::post('/mouvements', [MouvementController::class, 'stock'])->name('stock');
-    Route::get('/mouvementSearch', [MouvementController::class, 'search'])->name('mouvements.search');
+    Route::get('mouvements', [MouvementController::class, 'index'])->name('mouvements');
+    Route::post('mouvements', [MouvementController::class, 'stock'])->name('stock');
+    Route::get('mouvementSearch', [MouvementController::class, 'search'])->name('mouvements.search');
 
     Route::resource('/magasin', MagasinController::class);
-    Route::get('/mSearch', [MagasinController::class, 'mSearch'])->name('magasin.search');
-    Route::get('/magasinSearch', [MagasinController::class, 'search'])->name('mArticle.search');
-    Route::get('/magasinListe/{id}', [MagasinController::class, 'liste'])->name('magasin.liste');
+    Route::get('mSearch', [MagasinController::class, 'mSearch'])->name('magasin.search');
+    Route::get('magasinSearch', [MagasinController::class, 'search'])->name('mArticle.search');
+    Route::get('magasinListe/{id}', [MagasinController::class, 'liste'])->name('magasin.liste');
 
 });
 
 // Routes Achat - Bon_Commande et Fournisseur
 Route::middleware('auth')->group(function () {
-    Route::resource('/achats', AchatController::class);
-    Route::get('/achatsSearch', [AchatController::class, 'search'])->name('achats.search');
-    Route::get('/buySearch', [AchatController::class, 'achatSearch'])->name('achats.search');
+    Route::resource('achats', AchatController::class);
+    Route::get('achatsSearch', [AchatController::class, 'search'])->name('achats.search');
 
-    Route::resource('/bonCommande', BonCommandeController::class);
-    Route::get('/bonCommandeSearch', [BonCommandeController::class, 'search'])->name('bonCommande.search');
-    Route::get('/bonSearch', [BonCommandeController::class, 'bonSearch'])->name('bon.search');
+    Route::resource('bonCommande', BonCommandeController::class);
+    Route::get('bonCommandeSearch', [BonCommandeController::class, 'search'])->name('bonCommande.search');
+    Route::get('bonSearch', [BonCommandeController::class, 'bonSearch'])->name('bon.search');
 
     Route::get('bonCommande/{id}/envoyer', [BonCommandeController::class, 'envoyer'])->name('bonCommande.envoyer');
     Route::get('bonCommande/{id}/recevoir', [BonCommandeController::class, 'recevoir'])->name('bonCommande.recevoir');
@@ -170,9 +149,9 @@ Route::middleware('auth')->group(function () {
     Route::get('bonCommande/{id}/achat', [BonCommandeController::class, 'achat'])->name('bonCommande.achat');
 
     Route::resource('/fournisseurs', FournisseurController::class);
-    Route::get('/fournisseurSearch', [FournisseurController::class, 'search'])->name('fournisseurs.search');
-    Route::get('/fournisseurFacture/{id}', [FournisseurController::class, 'factures'])->name('fournisseurs.factures');
-    Route::get('/fournisseurPDF/{id}', [FournisseurController::class, 'pdf'])->name('fournisseurs.pdf');
+    Route::get('fournisseurSearch', [FournisseurController::class, 'search'])->name('fournisseurs.search');
+    Route::get('fournisseurFacture/{id}', [FournisseurController::class, 'factures'])->name('fournisseurs.factures');
+    Route::get('fournisseurPDF/{id}', [FournisseurController::class, 'pdf'])->name('fournisseurs.pdf');
 
 
 });
@@ -181,31 +160,31 @@ Route::middleware('auth')->group(function () {
 // Routes Clients, Devis et Commandes
 Route::middleware('auth')->group(function () {
 
-    Route::resource('/clients', ClientController::class);
-    Route::get('/clientSearch', [ClientController::class, 'search'])->name('clients.search');
+    Route::resource('clients', ClientController::class);
+    Route::get('clientSearch', [ClientController::class, 'search'])->name('clients.search');
 
-    Route::resource('/commandes', VenteController::class);
-    Route::get('/commandeSearch', [VenteController::class, 'search'])->name('commandes.search');
+    Route::resource('commandes', VenteController::class);
+    Route::get('commandeSearch', [VenteController::class, 'search'])->name('commandes.search');
     // Route pour recherche article dans caisse
-    Route::get('/caisseSearch', [VenteController::class, 'caisseSearch'])->name('caisse.search');
+    Route::get('caisseSearch', [VenteController::class, 'caisseSearch'])->name('caisse.search');
 
-    Route::get('/factures', [VenteController::class, 'facture'])->name('commandes.factures');
-    Route::get('/ticket/{id}', [VenteController::class, 'ticket'])->name('commandes.ticket');
+    Route::get('factures', [VenteController::class, 'facture'])->name('commandes.factures');
+    Route::get('ticket/{id}', [VenteController::class, 'ticket'])->name('commandes.ticket');
     
-    Route::get('/pdv', [SessionCaisseController::class, 'pdv'])->name('commandes.pdv');
-    Route::get('/ouvrirCaisse', [SessionCaisseController::class, 'ouvrirCaisse'])->name('ouvrirCaisse');
-    Route::get('/fermerCaisse', [SessionCaisseController::class, 'fermerCaisse'])->name('fermerCaisse');
+    Route::get('pdv', [SessionCaisseController::class, 'pdv'])->name('commandes.pdv');
+    Route::get('ouvrirCaisse', [SessionCaisseController::class, 'ouvrirCaisse'])->name('ouvrirCaisse');
+    Route::get('fermerCaisse', [SessionCaisseController::class, 'fermerCaisse'])->name('fermerCaisse');
     
-    Route::resource('/devis', DevisController::class);
-    Route::get('/devisSearch', [DevisController::class, 'search'])->name('devis.search');
-    Route::get('/devSearch', [DevisController::class, 'devisSearch'])->name('dev.search');
+    Route::resource('devis', DevisController::class);
+    Route::get('devisSearch', [DevisController::class, 'search'])->name('devis.search');
+    Route::get('devSearch', [DevisController::class, 'devisSearch'])->name('dev.search');
 
 
-    Route::get('/devis/{devis}/facture', [DevisController::class, 'facture'])->name('devis.facture');
+    Route::get('devis/{devis}/facture', [DevisController::class, 'facture'])->name('devis.facture');
 
-    Route::get('/devis/{devis}/valider', [DevisController::class, 'valider'])->name('devis.valider');
-    Route::get('/devis/{devis}/refuser', [DevisController::class, 'refuser'])->name('devis.refuser');
-    Route::get('/devis/{devis}/convertir', [DevisController::class, 'convertir'])->name('devis.convertir');
+    Route::get('devis/{devis}/valider', [DevisController::class, 'valider'])->name('devis.valider');
+    Route::get('devis/{devis}/refuser', [DevisController::class, 'refuser'])->name('devis.refuser');
+    Route::get('devis/{devis}/convertir', [DevisController::class, 'convertir'])->name('devis.convertir');
 
 });
 
@@ -213,13 +192,13 @@ Route::middleware('auth')->group(function () {
 // Routes Comptabilite, Depenses, Recettes et Paiements
 Route::middleware('auth')->group(function () {
 
-    Route::resource('/paiements', PaiementController::class);
-    Route::get('/paiementSearch', [PaiementController::class, 'search'])->name('paiements.search');
+    Route::resource('paiements', PaiementController::class);
+    Route::get('paiementSearch', [PaiementController::class, 'search'])->name('paiements.search');
 
-    Route::put('/paiements/{id}/annuler', [PaiementController::class, 'annuler'])->name('paiements.annuler');
+    Route::put('paiements/{id}/annuler', [PaiementController::class, 'annuler'])->name('paiements.annuler');
 
-    Route::resource('/recettes', RecetteController::class);
-    Route::resource('/depenses', DepenseController::class);
+    Route::resource('recettes', RecetteController::class);
+    Route::resource('depenses', DepenseController::class);
 
 });
 

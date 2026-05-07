@@ -54,7 +54,7 @@
                                             <th>Nom</th>
                                             <th>Email</th>
                                             <th>Role</th>
-                                            <th>Statut</th>
+                                            <!--<th>Statut</th>-->
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -64,13 +64,13 @@
                                             <td>{{$u->name}}</td>
                                             <td>{{$u->email ?? 'Vide'}}</td>
                                             <td>{{$u->role ?? 'Vide'}}</td>
-                                            <td>
-                                                @if($u->isOnline())
-                                                    <span class="badge bg-success">En ligne</span>
+                                            <!--<td>
+                                                @if($u->statut)
+                                                    <span class="badge bg-success">Actif</span>
                                                 @else
-                                                    <span class="badge bg-danger">Hors ligne</span>
+                                                    <span class="badge bg-danger">Inactif</span>
                                                 @endif
-                                            </td> 
+                                            </td>--> 
                                             <td>
                                                 <!--<div class="action-buttons">
                                                     <a href="{{ route('commandes.pdv', $u->id) }}" class="action-btn" title="Afficher"><i class="fas fa-eye"></i></a>
