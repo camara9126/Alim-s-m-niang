@@ -259,8 +259,8 @@
                 <div class="stats-grid">
                     <div class="stat-card2" style="background-color: #163318;">
                         <div class="stat-info">
-                            <a href="{{ route('articles.create') }}">
-                                <h3 class="text-white">Nouveau produit</h3>
+                            <a href="{{ route('depenses.index') }}">
+                                <h3 class="text-white">Depenses</h3>
                                 <div class="number text-white"></div>
                             </a>
                         </div>
