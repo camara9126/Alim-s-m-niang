@@ -46,8 +46,8 @@
         }
 
         :root {
-            --primary: #00778B;
-            --primary-dark: #2F8EE0;
+            --primary: #D6711A;
+            --primary-dark: #F5A40F;
             --primary-light: #EDF5FA;
             --white: #ffffff;
             --gray-100: #f5f7fb;

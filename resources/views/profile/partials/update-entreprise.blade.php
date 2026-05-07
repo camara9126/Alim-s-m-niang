@@ -22,25 +22,25 @@
 
             <div>
                 <x-input-label for="nom" :value="__('Nom')" />
-                <x-text-input id="nom" name="nom" readOnly type="text" class="mt-1 block w-full" :value="old('nom', $entreprise->nom)" required autofocus autocomplete="nom" />
+                <x-text-input id="nom" name="nom" readOnly type="text" class="mt-1 block w-full" :value="old('nom', $entreprise->nom)" autofocus autocomplete="nom" />
                 <x-input-error class="mt-2" :messages="$errors->get('nom')" />
             </div>
 
             <div>
                 <x-input-label for="telephone" :value="__('Telephone')" />
-                <x-text-input id="telephone" name="telephone" type="text" class="mt-1 block w-full" :value="old('telephone', $entreprise->telephone)" required autocomplete="telephone" />
+                <x-text-input id="telephone" name="telephone" type="text" class="mt-1 block w-full" :value="old('telephone', $entreprise->telephone)" autocomplete="telephone" />
                 <x-input-error class="mt-2" :messages="$errors->get('telephone')" />
             </div>
 
             <div>
                 <x-input-label for="telephone 2" :value="__('Telephone 2')" />
-                <x-text-input id="telephone" name="tel2" type="text" class="mt-1 block w-full" :value="old('tel2', $entreprise->tel2)" required autocomplete="tel2" />
+                <x-text-input id="telephone" name="tel2" type="text" class="mt-1 block w-full" :value="old('tel2', $entreprise->tel2)" autocomplete="tel2" />
                 <x-input-error class="mt-2" :messages="$errors->get('tel2')" />
             </div>
 
             <div>
                 <x-input-label for="fixe" :value="__('Fixe')" />
-                <x-text-input id="telfixe" name="telfixe" type="text" class="mt-1 block w-full" :value="old('telfixe', $entreprise->telfixe)" required autocomplete="telfixe" />
+                <x-text-input id="telfixe" name="telfixe" type="text" class="mt-1 block w-full" :value="old('telfixe', $entreprise->telfixe)" autocomplete="telfixe" />
                 <x-input-error class="mt-2" :messages="$errors->get('telfixe')" />
             </div>
 

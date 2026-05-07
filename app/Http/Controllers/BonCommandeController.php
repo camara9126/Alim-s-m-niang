@@ -86,7 +86,7 @@ class BonCommandeController extends Controller
         // Création du bon de commande
         $bonCommande = Bon_commande::create([
             'reference' => 'BC-' . strtoupper(Str::random(6)),
-            'fournisseur_id' => $request->fournisseur_id,
+            'fournisseur_id' => $request->fournisseur_id ?? null,
             'total' => 0,
             'statut' => 'en_attente',
             'date_commande' => now(),

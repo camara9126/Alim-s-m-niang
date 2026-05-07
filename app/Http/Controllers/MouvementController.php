@@ -60,7 +60,7 @@ class MouvementController extends Controller
             'article_id' => $article->id,
             'type' => $request->type,
             'quantite' => $request->quantite,
-            'magasin_id' => $request->magasin_id,
+            'magasin_id' => $request->magasin_id ?? null,
             'reference' => 'MVT-' . now()->timestamp,
         ]);
 

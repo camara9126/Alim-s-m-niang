@@ -21,9 +21,10 @@ class articleController extends Controller
     {
         $articles= Article::latest()->paginate(50);
         $categorie= categorie::latest()->get();
-        $magasins = Magasin::latest()->get();
+        $fournisseur= fournisseur::latest()->get();
+        $magasin = Magasin::latest()->get();
 
-        return view('dashboard.articles.index', compact('articles','categorie','magasins'));
+        return view('dashboard.articles.index', compact('articles','categorie','magasin','fournisseur'));
     }
 
     /**
@@ -93,7 +94,7 @@ class articleController extends Controller
 
         // creation de l'article
         $articles= Article::create([
-            'fournisseur_id' => 1,
+            'fournisseur_id' => $request->fournisseur_id ?? null,
             'nom' => $request->nom,
             'description' => $request->description ?? null,
             'prix_achat' => $request->prix_vente,
@@ -101,9 +102,9 @@ class articleController extends Controller
             'code' => $this->generateCode(),
             'reference' => 'REF-' . now()->timestamp,
             'stock' => $request->stock  ?? 100,
-            'stock_min' => 20,
-            'categorie_id' => 1,
-            'magasin_id' => $request->magasin_id ?? 1,
+            'stock_min' => $request->stock_min ?? 20,
+            'categorie_id' => $request->categorie_id ?? null,
+            'magasin_id' => $request->magasin_id ?? null,
             'image' => $path ?? $entreprise->logo,
         ]);
 
@@ -122,7 +123,7 @@ class articleController extends Controller
             'article_id' => $articles->id,
             'type' => 'entree',
             'quantite' => $request->stock ?? 100,
-            'magasin_id' => $request->magasin_id ?? 1,
+            'magasin_id' => $request->magasin_id ?? null,
             'reference' => 'MVT-' . now()->timestamp,
         ]);
 
@@ -223,16 +224,33 @@ class articleController extends Controller
         // mise a jour de l'article
         $article->update([
             'nom' => $request->nom,
-            'fournisseur_id' => $request->fournisseur_id ?? 1,
+            'fournisseur_id' => $request->fournisseur_id ?? null,
             'description' => $request->description ?? null,
             'prix_achat' => $request->prix_vente,
             'prix_vente' => $request->prix_vente,
-            'designation' => $request->designation ?? null,
             'stock' => $request->stock  ?? 100,
             'stock_min' => $request->stock_min  ?? 20,
-            'categorie_id' => $request->categorie_id ?? 1,
-            'magasin_id' => $request->magasin_id ?? 1,
+            'categorie_id' => $request->categorie_id ?? null,
+            'magasin_id' => $request->magasin_id ?? null,
             'image' => $path ?? $article->image,
+        ]);
+
+        // Creation de l'article dans le depot
+        $magasin = Magasin::where('id', $request->magasin_id)->lockForUpdate()->firstOrFail(); // verrou stock
+
+        Article_depot::create([
+            'article_id' => $article->id,
+            'magasin_id' => $magasin->id,
+            'stock' => $request->stock,
+        ]);
+
+        // Enregistrement d'un historique de mouvement
+        Mouvement_stock::create([
+            'article_id' => $article->id,
+            'type' => 'entree',
+            'quantite' => $request->stock ?? 100,
+            'magasin_id' => $request->magasin_id ?? null,
+            'reference' => 'MVT-' . now()->timestamp,
         ]);
 
         return redirect()->route('articles.index')->with('success', 'Article modifiée avec success.');

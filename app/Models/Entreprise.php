@@ -16,7 +16,7 @@ class Entreprise extends Model
         'logo',
         'taux_tva',
         'ninea',
-        'tel2',
-        'telfixe',
+        'tel_2',
+        'tel_fixe',
     ];
 }

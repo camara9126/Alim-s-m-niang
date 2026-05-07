@@ -82,9 +82,7 @@ class VenteController extends Controller
             return redirect()->route('commandes.pdv')->with('success', 'Aucun session ouverte');
         }
 
-        $ventes= Vente::with('client')->latest()->simplePaginate(50); 
-
-        
+        $ventes= Vente::with('client')->latest()->simplePaginate(50);      
 
         $vente = Vente::where('session_caisse_id', $session->id)->when($search, function ($query, $search) {
 
@@ -171,7 +169,7 @@ class VenteController extends Controller
 
                 //dd($request->montant);
                 $vente = Vente::create([
-                    'client_id' =>  $request->client_id ?? 2,
+                    'client_id' =>  $request->client_id ?? null,
                     'session_caisse_id' => $session->id,
                     'reference' => 'VNT-' . time(),
                     'date' => now(),

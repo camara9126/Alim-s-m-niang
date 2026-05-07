@@ -5,7 +5,7 @@
             <div class="sidebar-header">
                 <h2>
                     @if($entreprise->logo)
-                        <img src="{{asset('storage/'.$entreprise->logo)}}" width="100" alt="">
+                        <img src="{{asset('storage/'.$entreprise->logo)}}" width="130" alt="">
                     @else
                         {{$entreprise->nom}}
                     @endif
@@ -208,7 +208,7 @@
                 <!-- Stats Cards -->
                  <!-- 1er ligne -->
                 <div class="stats-grid">
-                    <div class="stat-card" style="background-color: #E5D8FF;">
+                    <div class="stat-card" style="background-color: #c5a8ff;">
                         <div class="stat-info">
                             <a href="{{ route('articles.index') }}">
                                 <h3>Articles</h3>
@@ -219,7 +219,7 @@
                             <i class="fas fa-box"></i>
                         </div>
                     </div>
-                    <div class="stat-card" style="background-color: #FFF7B1;">
+                    <div class="stat-card" style="background-color: #DBAC46;">
                         <div class="stat-info">
                             <a href="{{ route('clients.index') }}">
                                 <h3>Clients</h3>
@@ -231,7 +231,7 @@
                         </div>
                     </div>
                     
-                    <div class="stat-card" style="background-color: #BAFFAC;">
+                    <div class="stat-card" style="background-color: #F8F5DF;">
                         <div class="stat-info">
                             <a href="{{ route('commandes.create') }}">
                                 <h3 class="">factures</h3>
@@ -257,11 +257,11 @@
 
                 <!-- 2nd ligne -->
                 <div class="stats-grid">
-                    <div class="stat-card2" style="background-color: #FFBC77;">
+                    <div class="stat-card2" style="background-color: #163318;">
                         <div class="stat-info">
                             <a href="{{ route('articles.create') }}">
                                 <h3 class="text-white">Nouveau produit</h3>
-                                <div class="number text-white">{{$articles->count()}}</div>
+                                <div class="number text-white"></div>
                             </a>
                         </div>
                         <div class="stat-icon">
@@ -291,7 +291,7 @@
                             <i class="fas fa-list"></i>
                         </div>
                     </div>
-                    <div class="stat-card2">
+                    <div class="stat-card2" style="background-color: #697345;">
                         <div class="stat-info">
                             <a href="{{ route('devis.create') }}">
                                 <h3 class="text-white">Devis</h3>

@@ -84,7 +84,7 @@ class DevisController extends Controller
         // Création du devis
         $devis = Devis::create([
             'reference' => 'DEV-' . strtoupper(Str::random(6)),
-            'client_id' => $request->client_id ?? 2,
+            'client_id' => $request->client_id ?? null,
             'total' => 0,
             'statut' => 'en_attente',
             'date_devis' => now(),

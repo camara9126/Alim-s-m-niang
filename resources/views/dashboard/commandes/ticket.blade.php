@@ -164,7 +164,7 @@
             <thead>
                 @foreach($vente->items as $item)
                     <tr>
-                        <th>{{ strtoupper($item->article->nom) }}</td>
+                        <th>{{ strtoupper($item->article->nom ?? '-') }}</td>
                         <!--<th>{{ $item->quantite }}</td>-->
                         <th>{{ $item->quantite }} X {{ number_format($item->prix_unitaire, 0, ',', ' ') }} CFA</td>
                         <th>{{ number_format($item->total_ttc, 0, ',', ' ') }} CFA</td>

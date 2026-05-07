@@ -74,10 +74,10 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td>{{$m->article->nom}}</td>
+                                        <td>{{$m->article->nom ?? '-'}}</td>
                                         <td>{{$m->type}}</td>
                                         <td><strong>{{$m->quantite}}</strong></td>
-                                        <td>{{ $m->magasin->nom }}</td>
+                                        <td>{{ $m->magasin->nom ?? '-' }}</td>
                                         <td>{{$m->created_at->format('d/m/Y')}}</td>
                                     </tr>
                                     @empty
@@ -189,10 +189,10 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td>{{$m->article->nom}}</td>
+                                        <td>{{$m->article->nom ?? '-'}}</td>
                                         <td>{{$m->type}}</td>
                                         <td><strong>{{$m->quantite}}</strong></td>
-                                        <td>{{ $m->magasin->nom }}</td>
+                                        <td>{{ $m->magasin->nom ?? '-' }}</td>
                                         <td>{{$m->created_at->format('d/m/Y')}}</td>
                                     </tr>
                                     @empty

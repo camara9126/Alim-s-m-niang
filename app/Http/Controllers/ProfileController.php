@@ -108,8 +108,8 @@ class ProfileController extends Controller
             'adresse' => 'nullable|string',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'ninea' => 'nullable',
-            'tel2' => 'nullable',
-            'telfixe' => 'nullable',
+            'tel_2' => 'nullable',
+            'tel_fixe' => 'nullable',
         ]);
 
         // Gestion des logo

@@ -86,7 +86,7 @@
                                             </div>
                                         </td>
                                         <td>{{$a->nom}}</td>
-                                        <!--<td>{{$a->categorie->nom}}</td>-->
+                                        <!--<td>{{$a->categorie->nom ?? 'Vide'}}</td>-->
                                         <td><strong>{{$a->prix_vente}} FCFA</strong></td>
                                         <td>
                                             @if($a->stock_min >= $a->stock)
@@ -156,7 +156,7 @@
                                                     <div class="mb-3">
                                                         <label>Depot</label>
                                                         <select name="magasin_id" class="form-control">
-                                                            @foreach($magasins as $m)
+                                                            @foreach($magasin as $m)
                                                                 <option value="{{ $m->id }}">{{ $m->nom }}</option>
                                                             @endforeach
                                                         </select>
@@ -233,8 +233,8 @@
                                                     <div class="mb-3">
                                                         <label>Categorie</label>
                                                         <select name="article_id" class="form-control">
-                                                            @foreach($categorie as $m)
-                                                                <option value="{{ $m->id }}">{{ $m->nom }}</option>
+                                                            @foreach($categorie as $c)
+                                                                <option value="{{ $c->id }}">{{ $c->nom }}</option>
                                                             @endforeach
                                                         </select>
                                                     </div>                                                    
@@ -243,6 +243,29 @@
                                                     <div class="mb-3">
                                                         <label>Stock minimum</label>
                                                         <input type="text" name="stock_min" class="form-control">
+                                                    </div>         
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label>Fournisseur</label>
+                                                        <select name="fournisseur_id" class="form-control">
+                                                            @foreach($fournisseur as $f)
+                                                                <option value="{{ $f->id }}">{{ $f->nom }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>                                                    
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label>Magasin</label>
+                                                        <select name="magasin_id" class="form-control">
+                                                            @foreach($magasin as $m)
+                                                                <option value="{{ $m->id }}">{{ $m->nom }}</option>
+                                                            @endforeach
+                                                        </select>
                                                     </div>         
                                                 </div>
                                             </div>

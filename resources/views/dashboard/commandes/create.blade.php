@@ -317,7 +317,7 @@
                                     <div class="pos-left">
                                         <div class="pos-card">
                                             <div class="pos-card-header">
-                                                <i class="fas fa-box" style="margin-right: 8px;"></i> Caisserie · Thiolom Gandiol
+                                                <i class="fas fa-box" style="margin-right: 8px;"></i> Caisserie 
                                             </div>
                                             <div class="pos-card-body">
                                                 
