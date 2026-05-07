@@ -151,7 +151,7 @@
 
         <!-- En-tête -->
         <div class="text-center">
-            <div class="text-small">BOUTIQUE THIOLOM GANDIOL</div>
+            <div class="text-small">BOUTIQUE ALIEMNTATION S. M. NIANG</div>
             <div class="text-small">Tel: {{ $entreprise->telephone }} / {{ $entreprise->tel2 }} | Fixe : {{ $entreprise->telfixe }}</div>
             <div class="dotted-line"></div>
             <div class="text-small text-bold">Servi par: {{strtoupper($vente->user->name)}}</div>

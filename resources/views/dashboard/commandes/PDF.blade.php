@@ -220,13 +220,9 @@
         <!-- Client -->
         <div class="client-section">
             <div class="client-label">Client :</div>
-            <div>{{ $vente->client->nom }}</div>
-            @if($vente->client->telephone)
-                <div>Tél: {{ $vente->client->telephone }}</div>
-            @endif
-            @if($vente->client->adresse)
-                <div>{{ $vente->client->adresse }}</div>
-            @endif
+            <div>{{ $vente->client->nom ?? '-' }}</div>
+                <div>Tél: {{ $vente->client->telephone ?? '-' }}</div>
+                <div>{{ $vente->client->adresse ?? '-' }}</div>
         </div>
 
         <!-- Tableau des articles -->

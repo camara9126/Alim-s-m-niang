@@ -174,6 +174,29 @@
                                                 <input type="text" name="prix_vente" class="form-control">
                                             </div>
 
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label>Fournisseur</label>
+                                                        <select name="fournisseur_id" class="form-control">
+                                                            @foreach($fournisseur as $f)
+                                                                <option value="{{ $f->id }}">{{ $f->nom }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>                                                    
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label>Magasin</label>
+                                                        <select name="magasin_id" class="form-control">
+                                                            @foreach($magasin as $m)
+                                                                <option value="{{ $m->id }}">{{ $m->nom }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>         
+                                                </div>
+                                            </div>
+
                                             <div class="mb-3">
                                                 <label>Description</label>
                                                 <textarea name="description"  class="form-control"></textarea>
