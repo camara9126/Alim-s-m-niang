@@ -208,7 +208,7 @@
                 <!-- Stats Cards -->
                  <!-- 1er ligne -->
                 <div class="stats-grid">
-                    <div class="stat-card" style="background-color: #F8FAFC;">
+                    <div class="stat-card" style="background-color: #ffb5b3;">
                         <div class="stat-info">
                             <a href="{{ route('articles.index') }}">
                                 <h3>Articles</h3>
@@ -231,7 +231,7 @@
                         </div>
                     </div>
                     
-                    <div class="stat-card" style="background-color: #DCFCE7;">
+                    <div class="stat-card" style="background-color: #ffeda2;">
                         <div class="stat-info">
                             <a href="{{ route('commandes.create') }}">
                                 <h3 class="">factures</h3>
