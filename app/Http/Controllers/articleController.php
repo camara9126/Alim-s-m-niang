@@ -78,6 +78,8 @@ class articleController extends Controller
             'stock_min' ,
             'magasin_id' ,
             'categorie_id' => 'exists:categorie,id',
+            'categorie' ,
+            'fournisseur' ,
             
         ]);
 
@@ -92,9 +94,27 @@ class articleController extends Controller
             $entreprise->logo;
         }
 
+
+        // Creation de categorie et ou fournisseur
+        if($request->categorie) {
+            
+            $categorie= Categorie::create([
+                'nom' => $request->categorie
+            ]);
+
+        }
+
+        //Creation de fournisseur
+        if($request->fournisseur) {
+            
+            $fournisseur= Fournisseur::create([
+                'nom' => $request->fournisseur
+            ]);
+
+        }
         // creation de l'article
         $articles= Article::create([
-            'fournisseur_id' => $request->fournisseur_id ?? null,
+            'fournisseur_id' => $request->fournisseur_id ?? $fournisseur->id,
             'nom' => $request->nom,
             'description' => $request->description ?? null,
             'prix_achat' => $request->prix_vente,
@@ -103,7 +123,7 @@ class articleController extends Controller
             'reference' => 'REF-' . now()->timestamp,
             'stock' => $request->stock  ?? 100,
             'stock_min' => $request->stock_min ?? 20,
-            'categorie_id' => $request->categorie_id ?? null,
+            'categorie_id' => $request->categorie_id ?? $categorie->id,
             'magasin_id' => $request->magasin_id ?? null,
             'image' => $path ?? $entreprise->logo,
         ]);
@@ -189,38 +209,6 @@ class articleController extends Controller
             $article->image;
         }
 
-        // Gestion des galeries
-        if ($request->hasFile('gal_1')) {
-
-            // Suppression de l'ancien image gal
-            if($article->gal_1){
-                Storage::delete('public/storage/imgArticles/'.$article->gal_1);
-            }
-
-            $filename = time().$request->file('gal_1')->getClientOriginalName();
-            $gal_1 = $request->file('gal_1')->storeAs('imgArticles', $filename, 'public');
-            $request['gal_1'] = '/storage/' . $gal_1;
-
-        } else {
-            $article->gal_1 ?? null;
-        }   
-
-        if ($request->hasFile('gal_2')) {
-
-         // Suppression de l'ancien image gal
-            if($article->gal_2){
-                Storage::delete('public/storage/imgArticles/'.$article->gal_2);
-            }
-
-            $filename = time().$request->file('gal_2')->getClientOriginalName();
-            $gal_2 = $request->file('gal_2')->storeAs('imgArticles', $filename, 'public');
-            $request['gal_2'] = '/storage/' . $gal_2;
-
-        } else {
-            $article->gal_2  ?? null;
-        }
-
-        //dd($request);
         // mise a jour de l'article
         $article->update([
             'nom' => $request->nom,
@@ -238,20 +226,19 @@ class articleController extends Controller
         // Creation de l'article dans le depot
         $magasin = Magasin::where('id', $request->magasin_id)->lockForUpdate()->firstOrFail(); // verrou stock
 
-        Article_depot::create([
-            'article_id' => $article->id,
-            'magasin_id' => $magasin->id,
-            'stock' => $request->stock,
-        ]);
+        // Mettre à jour le stock dans Article_depot 
+        $articleDepot = Article_depot::where('article_id', $article->id)->where('magasin_id', $magasin->id)->first();
+    
+        if ($articleDepot) {
+            $articleDepot->increment('stock', $request->stock  ?? 100);
+        } else {
+            Article_depot::create([
+                'article_id' => $article->id,
+                'magasin_id' => $magasin->d,
+                'stock' => $request->stock  ?? 100
+            ]);
+        }
 
-        // Enregistrement d'un historique de mouvement
-        Mouvement_stock::create([
-            'article_id' => $article->id,
-            'type' => 'entree',
-            'quantite' => $request->stock ?? 100,
-            'magasin_id' => $request->magasin_id ?? null,
-            'reference' => 'MVT-' . now()->timestamp,
-        ]);
 
         return redirect()->route('articles.index')->with('success', 'Article modifiée avec success.');
     }

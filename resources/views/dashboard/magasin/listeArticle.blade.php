@@ -75,7 +75,7 @@
                                             </div>
                                         </td>
                                         <td>{{$a->nom}}</td>
-                                        <td>{{$a->categorie ?? '-'}}</td>
+                                        <td>{{$a->categorie->nom ?? '-'}}</td>
                                         <td><strong>{{$a->prix}} FCFA</strong></td>
                                         <td>
                                             @if($a->stock_min >= $a->stock)

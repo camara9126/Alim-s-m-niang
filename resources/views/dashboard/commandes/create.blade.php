@@ -361,7 +361,7 @@
                                                     <i class="fas fa-box"></i> Articles
                                                 </div>
                                                 <div class="product-grid" id="productGridShoes">
-                                                    @foreach($articles->take(15) as $article)
+                                                    @foreach($articles->take(10) as $article)
                                                         <div class="product-card" data-id="{{ $article->id }}" data-prix_vente="{{ $article->prix_vente }}" data-nom="{{ $article->nom }}">
                                                             <!--<div class="product-image">
                                                                 <img src="{{ asset('storage/'.$article->image) }}" width="20">

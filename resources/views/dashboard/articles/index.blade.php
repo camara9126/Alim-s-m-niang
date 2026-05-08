@@ -63,7 +63,7 @@
                                         <th style="background-color: #E5D8FF;">Image</th>
                                         <th style="background-color: #E5D8FF;">Code</th>
                                         <th style="background-color: #E5D8FF;">Produit</th>
-                                        <!--<th style="background-color: #E5D8FF;">Catégorie</th>-->
+                                        <th style="background-color: #E5D8FF;">Catégorie</th>
                                         <th style="background-color: #E5D8FF;">Prix</th>
                                         <th style="background-color: #E5D8FF;">Stock</th>
                                         <!--<th style="background-color: #E5D8FF;">Etiquette</th>-->
@@ -86,7 +86,7 @@
                                             </div>
                                         </td>
                                         <td>{{$a->nom}}</td>
-                                        <!--<td>{{$a->categorie->nom ?? 'Vide'}}</td>-->
+                                        <td>{{$a->categorie->nom ?? '-'}}</td>
                                         <td><strong>{{$a->prix_vente}} FCFA</strong></td>
                                         <td>
                                             @if($a->stock_min >= $a->stock)
@@ -99,7 +99,7 @@
                                         <td><span class="badge-{{$a->statut ? 'success' : 'warning'}}">{{$a->statut ? 'Publié' : 'En attente'}}</span></td>
                                         <td>
                                             <div class="action-buttons">
-                                                <a href="" class="action-btn" title="Modifier"  data-bs-toggle="modal" data-id="{{ $a->id }}" data-name="{{ $a->nom }}" data-categorie="{{ $a->categorie_id }}" data-magasin="{{ $a->magasin_id }}" data-price="{{ $a->prix_vente }}" data-description="{{ $a->description }}" data-stock="{{ $a->stock }}" data-image="{{ asset('storage/'.$a->image) }}" data-bs-target="#articleEditModal">
+                                                <a href="" class="action-btn" title="Modifier"  data-bs-toggle="modal" data-id="{{ $a->id }}" data-name="{{ $a->nom }}" data-categorie="{{ $a->categorie_id }}" data-magasin="{{ $a->magasin_id }}" data-price="{{ $a->prix_vente }}" data-description="{{ $a->description }}" data-stock="{{ $a->stock }}" data-stock_min="{{ $a->stock_min }}" data-image="{{ asset('storage/'.$a->image) }}" data-bs-target="#articleEditModal">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
                                                 <form action="{{route('articles.destroy', $a->id)}}" type="button" method="post" onsubmit="return confirm('Supprimer ?')">
@@ -144,57 +144,64 @@
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="mb-3">
-                                                        <label>Categorie</label>
-                                                        <select name="article_id" class="form-control">
-                                                            @foreach($categorie as $m)
-                                                                <option value="{{ $m->id }}">{{ $m->nom }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>                                                    
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="mb-3">
-                                                        <label>Depot</label>
-                                                        <select name="magasin_id" class="form-control">
-                                                            @foreach($magasin as $m)
-                                                                <option value="{{ $m->id }}">{{ $m->nom }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>         
-                                                </div>
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label>Quantite de stock</label>
-                                                <input type="number" name="stock" class="form-control" required>
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label>Prix</label>
-                                                <input type="text" name="prix_vente" class="form-control">
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="mb-3">
-                                                        <label>Fournisseur</label>
-                                                        <select name="fournisseur_id" class="form-control">
-                                                            @foreach($fournisseur as $f)
-                                                                <option value="{{ $f->id }}">{{ $f->nom }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>                                                    
+                                                        <label>Prix</label>
+                                                        <input type="text" name="prix_vente" class="form-control">
+                                                    </div>
+                                                   
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="mb-3">
                                                         <label>Magasin</label>
                                                         <select name="magasin_id" class="form-control">
+                                                                <option value="">-- Selectionner --</option>
                                                             @foreach($magasin as $m)
                                                                 <option value="{{ $m->id }}">{{ $m->nom }}</option>
                                                             @endforeach
                                                         </select>
                                                     </div>         
                                                 </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label>Quantite de stock</label>
+                                                        <input type="number" name="stock" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label>Stock Minimum</label>
+                                                        <input type="number" name="stock_min" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label>Categorie</label>
+                                                        <input type="text" name="categorie" class="form-control" placeholder="Nouveau categorie">
+                                                        <select name="article_id" class="form-control">
+                                                                <option value="">-- Selectionner --</option>
+                                                            @foreach($categorie as $m)
+                                                                <option value="{{ $m->id }}">{{ $m->nom }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div> 
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label>Fournisseur</label>
+                                                        <input type="text" name="fournisseur" class="form-control" placeholder="Nouveau fournisseur">
+                                                        <select name="fournisseur_id" class="form-control">
+                                                                <option value="">-- Selectionner --</option>
+                                                            @foreach($fournisseur as $f)
+                                                                <option value="{{ $f->id }}">{{ $f->nom }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>                                                    
+                                                </div>  
                                             </div>
 
                                             <div class="mb-3">
@@ -238,17 +245,27 @@
 
                                             <div class="mb-3">
                                                 <label>Nom de l'article</label>
-                                                <input type="text" name="nom" id="name" class="form-control" required>
+                                                <input type="text" name="nom" id="name" class="form-control">
                                             </div>
 
                                             <div class="mb-3">
-                                                <label>Quantite de stock</label>
-                                                <input type="number" name="stock" id="stock" class="form-control" required>
-                                            </div>
-                                        
-                                            <div class="mb-3">
                                                 <label>Prix</label>
                                                 <input type="text" name="prix_vente" id="price" class="form-control">
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label>Quantite de stock</label>
+                                                        <input type="number" name="stock" id="stock" class="form-control">
+                                                    </div>                                                    
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label>Stock minimum</label>
+                                                        <input type="text" name="stock_min" id="stock_min" class="form-control">
+                                                    </div>                                                 
+                                                </div>
                                             </div>
 
                                             <div class="row">
@@ -264,34 +281,24 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="mb-3">
-                                                        <label>Stock minimum</label>
-                                                        <input type="text" name="stock_min" class="form-control">
-                                                    </div>         
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="mb-3">
                                                         <label>Fournisseur</label>
                                                         <select name="fournisseur_id" class="form-control">
                                                             @foreach($fournisseur as $f)
                                                                 <option value="{{ $f->id }}">{{ $f->nom }}</option>
                                                             @endforeach
                                                         </select>
-                                                    </div>                                                    
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="mb-3">
-                                                        <label>Magasin</label>
-                                                        <select name="magasin_id" class="form-control">
-                                                            @foreach($magasin as $m)
-                                                                <option value="{{ $m->id }}">{{ $m->nom }}</option>
-                                                            @endforeach
-                                                        </select>
                                                     </div>         
                                                 </div>
                                             </div>
+  
+                                            <div class="mb-3">
+                                                <label>Magasin</label>
+                                                <select name="magasin_id" class="form-control">
+                                                    @foreach($magasin as $m)
+                                                        <option value="{{ $m->id }}">{{ $m->nom }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>             
 
                                             <div class="mb-3">
                                                 <label>Description</label>
@@ -326,6 +333,7 @@
                 const price = button.getAttribute('data-price');
                 const description = button.getAttribute('data-description');
                 const stock = button.getAttribute('data-stock');
+                const stock_min = button.getAttribute('data-stock_min');
                 const image = button.getAttribute('data-image');
                 const categorie_id = button.getAttribute('data-categorie');
                 const magasin_id = button.getAttribute('data-magasin');
@@ -336,6 +344,7 @@
                 modal.querySelector('#price').value = price;
                 modal.querySelector('#description').value = description;
                 modal.querySelector('#stock').value = stock;
+                modal.querySelector('#stock_min').value = stock_min;
                 modal.querySelector('#image').src = image;
                 modal.querySelector('#categorie_id').value = categorie_id;
                 modal.querySelector('#magasin_id').value = magasin_id;
