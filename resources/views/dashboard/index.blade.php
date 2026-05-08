@@ -1,7 +1,7 @@
 @include('partials.header')
     <div class="dashboard">
         <!-- Sidebar -->
-            <aside class="sidebar">
+            <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <h2>
                     @if($entreprise->logo)
