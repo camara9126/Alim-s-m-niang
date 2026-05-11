@@ -62,7 +62,7 @@
                                             <li><b>Date</b> : {{$u->created_at}}</li>
                                             <li><b>Statut</b> : {{$u->role}}</li>
                                         </ul>
-                                        @if($u->id == request()->user()->id  && $u->role !== 'administrateur')
+                                        @if($u->id == request()->user()->id)
                                             @if(!$session)
                                                 <a href="{{ route('ouvrirCaisse') }}" class="btn btn-success">Ouvrir la session</a> 
                                             @else

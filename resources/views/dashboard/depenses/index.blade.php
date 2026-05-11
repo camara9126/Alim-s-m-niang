@@ -81,7 +81,7 @@
                         <div class="d-flex justify-content-center mt-4">
                             {{$depenses->links()}}
                         </div>
-                        <!-- Modal paiement -->
+                        <!-- Modal depense -->
                         <div class="modal fade" id="depenseModal" tabindex="-1">
                             <div class="modal-dialog">
                                <form action="{{ route('depenses.store') }}" method="POST" class="contact-form">
@@ -97,7 +97,7 @@
                                                 <!-- Libellé -->
                                                 <div class="col-12 mb-3">
                                                     <label class="form-label">Libellé de la dépense</label>
-                                                    <input type="text" name="libelle" class="form-control" placeholder="Ex : Achat marchandises" required>
+                                                    <input type="text" name="libelle" class="form-control" placeholder="Ex : Transport" required>
                                                 </div>
 
                                                 <!-- Montant -->
