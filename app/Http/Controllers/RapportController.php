@@ -93,8 +93,8 @@ class RapportController extends Controller
             $monthTopArticles = DB::table('vente_items')->join('articles', 'vente_items.article_id', '=', 'articles.id')->select('articles.nom as article',
                         DB::raw('SUM(vente_items.total_ttc) as total'))->whereMonth('vente_items.created_at', now()->month)->groupBy('articles.nom')->orderByDesc('total')->limit(10)->get();
 
-                $categories = $monthTopArticles->pluck('article')->toArray();
-                $amounts = $monthTopArticles->pluck('total')->toArray();
+                $monthCategories = $monthTopArticles->pluck('article')->toArray();
+                $monthAmounts = $monthTopArticles->pluck('total')->toArray();
 
                 
             // Top article annee
@@ -103,6 +103,6 @@ class RapportController extends Controller
             $yearCategories = $yearTopArticles->pluck('article')->toArray();
             $yearAmounts = $yearTopArticles->pluck('total')->toArray();
 
-        return view('dashboard.rapports', compact('entreprise','monthlyData','quarterlyData','yearlyData','categories', 'amounts','yearAmounts','yearCategories'));
+        return view('dashboard.rapports', compact('entreprise','monthlyData','quarterlyData','yearlyData','monthCategories', 'monthAmounts','yearAmounts','yearCategories'));
     }
 }

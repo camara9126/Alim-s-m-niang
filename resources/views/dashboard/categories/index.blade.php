@@ -59,7 +59,7 @@
                                     @foreach($categorie as $c)
                                         <tr>  
                                             <td><strong>{{$c->nom}}</strong></td>
-                                            <td>{{$c->description}}</td>
+                                            <td>{{$c->description ?? '-'}}</td>
                                             <td>{{$c->article->count() ?? '0'}}</td>
                                             <td>
                                                 <div class="action-buttons">

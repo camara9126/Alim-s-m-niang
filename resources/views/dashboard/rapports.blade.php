@@ -25,7 +25,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>Alimentation S. M. Niang</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -42,6 +42,8 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <!-- Customized Bootstrap Stylesheet -->
     <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet">
+    <!-- Icon Logo -->
+     <link rel="shortcut icon" href="{{asset('images/logo.jpeg')}}"/>
 
     <style>
         * {
@@ -1243,8 +1245,8 @@
         // ============================================
         
         const expensesDistributionMonth = {
-            categories: @json($categories),
-            amounts: @json($amounts),
+            categories: @json($monthCategories),
+            amounts: @json($monthAmounts),
             colors: ['#4caf50', '#2196f3', '#ff9800', '#f44336', 
                      '#9c27b0', '#009688', '#ff5722', '#e91e63'],
         };
@@ -1486,7 +1488,7 @@
                                     let value = context.raw || 0;
                                     let total = context.dataset.data.reduce((a, b) => a + b, 0);
                                     let percentage = ((value / total) * 100).toFixed(1);
-                                    return `${label}: XOF ${value.toLocaleString('fr-FR')} (${percentage} %)`;
+                                    return `${label}: XOF ${value.toLocaleString('fr-FR')}`;
                                 }
                             }
                         },
@@ -1630,38 +1632,6 @@
             document.getElementById('resultat-net').textContent = 
                 `XOF ${Math.round(newRevenue - newExpense).toLocaleString('fr-FR')}.00`;
         }
-
-        // ============================================
-        // EXPORT DES DONNÉES AU FORMAT CSV
-        // ============================================
-        
-        function exportMonthlyDataToCSV() {
-            let csv = "Mois,Recettes,Dépenses,Bénéfice\n";
-            
-            monthlyData.months.forEach((month, index) => {
-                csv += `${month},${monthlyData.revenues[index]},${monthlyData.expenses[index]},${monthlyData.profits[index]}\n`;
-            });
-            
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'donnees_comptables_2023.csv';
-            a.click();
-            window.URL.revokeObjectURL(url);
-        }
-
-        // Ajouter des écouteurs pour les boutons d'export
-        document.addEventListener('DOMContentLoaded', function() {
-            // Exemple d'utilisation
-            const exportBtn = document.querySelector('.btn-primary i.fa-file-export').parentElement;
-            if (exportBtn) {
-                exportBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    exportMonthlyDataToCSV();
-                });
-            }
-        });
 
  
         // Exécuter les calculs
