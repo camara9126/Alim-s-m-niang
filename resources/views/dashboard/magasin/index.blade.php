@@ -51,6 +51,7 @@
                                <table class="">
                                     <thead>
                                         <tr>
+                                            <th>ID</th>
                                             <th>Nom</th>
                                             <th>Telephone</th>
                                             <th>Adresse</th>
@@ -60,6 +61,7 @@
                                     <tbody>
                                         @forelse($magasins as $m)
                                         <tr>
+                                            <td><strong>{{$m->id}}</strong></td>
                                             <td>{{$m->nom}}</td>
                                             <td>{{$m->telephone ?? 'Vide'}}</td>
                                             <td>{{$m->adresse ?? 'Vide'}}</td>
