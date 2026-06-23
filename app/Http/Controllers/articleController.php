@@ -68,7 +68,6 @@ class articleController extends Controller
     public function store(Request $request)
     {
          $request->validate([
-            'fournisseur_id' => 'exists:fournisseurs,id',
             'nom' => 'required','string',
             'description' => 'nullable',
             'prix_achat' ,
@@ -77,7 +76,8 @@ class articleController extends Controller
             'stock' ,
             'stock_min' ,
             'magasin_id' ,
-            'categorie_id' => 'exists:categorie,id',
+            'fournisseur_id',
+            'categorie_id',
             'categorie' ,
             'fournisseur' ,
             
@@ -114,7 +114,6 @@ class articleController extends Controller
         }
         // creation de l'article
         $articles= Article::create([
-            'fournisseur_id' => $request->fournisseur_id ?? $fournisseur->id,
             'nom' => $request->nom,
             'description' => $request->description ?? null,
             'prix_achat' => $request->prix_achat ?? $request->prix_vente,
@@ -123,6 +122,7 @@ class articleController extends Controller
             'reference' => 'REF-' . now()->timestamp,
             'stock' => $request->stock  ?? 100,
             'stock_min' => $request->stock_min ?? 10,
+            'fournisseur_id' => $request->fournisseur_id ?? $fournisseur->id,
             'categorie_id' => $request->categorie_id ?? $categorie->id,
             'magasin_id' => $request->magasin_id ?? null,
             'image' => $path ?? $entreprise->logo,

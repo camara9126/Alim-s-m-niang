@@ -182,7 +182,7 @@
                                                     <div class="mb-3">
                                                         <label>Categorie</label>
                                                         <input type="text" name="categorie" class="form-control" placeholder="Nouveau categorie">
-                                                        <select name="article_id" class="form-control">
+                                                        <select name="categorie_id" class="form-control">
                                                                 <option value="">-- Selectionner --</option>
                                                             @foreach($categorie as $m)
                                                                 <option value="{{ $m->id }}">{{ $m->nom }}</option>

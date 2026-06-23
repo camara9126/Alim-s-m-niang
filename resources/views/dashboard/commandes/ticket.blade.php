@@ -166,20 +166,20 @@
                     <tr>
                         <th>{{ strtoupper($item->article->nom ?? '-') }}</td>
                         <!--<th>{{ $item->quantite }}</td>-->
-                        <th>{{ $item->quantite }} X {{ number_format($item->prix_unitaire, 0, ',', ' ') }} CFA</td>
+                        <th>{{ $item->quantite }} X {{ number_format($item->prix_unitaire, 0, ',', ' ') }} F</td>
                         <th>{{ number_format($item->total_ttc, 0, ',', ' ') }} CFA</td>
                     </tr>
                 @endforeach
                 <tr>
                     <td  style="text-align:right; font-weight:bold;">SOMME : </td>
-                    <td style="font-weight:bold;">{{ number_format($vente->total_ttc, 0, ',', ' ') }} CFA</td>
+                    <td style="font-weight:bold;">{{ number_format($vente->total_ttc, 0, ',', ' ') }} F</td>
                 </tr>
             </thead>
         </table>
 
         <div class="dotted-line"></div>
 
-        <div class="text-center text-small">Total des taxes : 0 CFA</div>
+        <div class="text-center text-small">Total des taxes : 0 F</div>
 
         <div class="dashed-line"></div>
 
