@@ -35,7 +35,7 @@ class articleController extends Controller
         $search = $request->query('search');
 
         $categorie= categorie::latest()->get();
-        $magasins = Magasin::latest()->get();
+        $magasin = Magasin::latest()->get();
 
         $articles = Article::with('categorie')->when($search, function ($query, $search) {
 
@@ -46,7 +46,7 @@ class articleController extends Controller
 
         })->latest()->paginate(50)->withQueryString(); // 🔑 garde ?search=;
 
-        return view('dashboard.articles.index', compact('articles', 'search','categorie','magasins'));
+        return view('dashboard.articles.index', compact('articles', 'search','categorie','magasin'));
     }
     
 
