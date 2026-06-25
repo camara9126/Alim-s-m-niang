@@ -377,8 +377,8 @@
                 modal.querySelector('#categorie_id').value = categorie_id;
                 modal.querySelector('#magasin_id').value = magasin_id;
                 modal.querySelector('#type_conditionnement').value = type_conditionnement;
-                // modal.querySelector('#unites_par_condition').value = unites_par_condition;
-                // modal.querySelector('#nb_conditions').value = nb_conditions;
+                modal.querySelector('#unites_par_condition').value = unites_par_condition;
+                modal.querySelector('#nb_conditions').value = nb_conditions;
                 
                 // Mettre à jour l'action du formulaire avec l'ID récupéré
                 const updateUrl = `/articles/${id}`;
