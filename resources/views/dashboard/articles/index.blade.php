@@ -366,8 +366,8 @@
                 const categorie_id = button.getAttribute('data-categorie');
                 const magasin_id = button.getAttribute('data-magasin');
                 const type_conditionnement = button.getAttribute('data-type_conditionnement');
-                //const unites_par_condition = button.getAttribute('data-unites_par_condition');
-                // const nb_conditions = button.getAttribute('data-nb_conditions');
+                const unites_par_condition = button.getAttribute('data-unites_par_condition');
+                const nb_conditions = button.getAttribute('data-nb_conditions');
                 
                 // Remplir le formulaire
                 modal.querySelector('#article_id').value = id;
