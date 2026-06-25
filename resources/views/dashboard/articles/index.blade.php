@@ -174,6 +174,7 @@
                                                 <select name="type_conditionnement" class="form-control">
                                                     <option value="carton">Carton</option>
                                                     <option value="sac">Sac</option>
+                                                    <option value="seau">Seau</option>
                                                     <option value="caisse">Caisse</option>
                                                     <option value="bidon">Bidon</option>
                                                     <option value="paquet">Paquet</option>
@@ -278,13 +279,14 @@
                                                     <option value="carton">Carton</option>
                                                     <option value="sac">Sac</option>
                                                     <option value="caisse">Caisse</option>
+                                                    <option value="seau">Seau</option>
                                                     <option value="bidon">Bidon</option>
                                                     <option value="paquet">Paquet</option>
                                                     <option value="autre">Autre</option>
                                                 </select>
                                             </div>  
 
-                                            <!--<div class="row">
+                                            <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="mb-3">
                                                         <label>Nombre de conditionnement</label>
@@ -297,7 +299,7 @@
                                                         <input type="number" name="unites_par_condition" id="unites_par_condition" min="1" class="form-control">
                                                     </div>
                                                 </div>
-                                            </div>-->
+                                            </div>
 
                                             <div class="row">
                                                 <div class="col-md-6">

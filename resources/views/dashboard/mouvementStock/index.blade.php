@@ -144,6 +144,7 @@
                                                 <select name="type_conditionnement" class="form-control">
                                                     <option value="carton">Carton</option>
                                                     <option value="sac">Sac</option>
+                                                    <option value="seau">Seau</option>
                                                     <option value="caisse">Caisse</option>
                                                     <option value="bidon">Bidon</option>
                                                     <option value="paquet">Paquet</option>
