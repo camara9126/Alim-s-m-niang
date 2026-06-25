@@ -140,8 +140,35 @@
                                             </div>
 
                                             <div class="mb-3">
+                                                <label>Type de conditionnement</label>
+                                                <select name="type_conditionnement" class="form-control">
+                                                    <option value="carton">Carton</option>
+                                                    <option value="sac">Sac</option>
+                                                    <option value="caisse">Caisse</option>
+                                                    <option value="bidon">Bidon</option>
+                                                    <option value="paquet">Paquet</option>
+                                                    <option value="autre">Autre</option>
+                                                </select>
+                                            </div>  
+
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label>Nombre de conditionnement</label>
+                                                        <input type="number" name="nb_conditions" id="nb_conditions" min="1" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label>Unites par conditionnement</label>
+                                                        <input type="number" name="unites_par_condition" id="unites_par_condition" min="1" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="mb-3">
                                                 <label>Quantite</label>
-                                                <input type="number" name="quantite" min="1" class="form-control" id="exampleInputquantity1">
+                                                <input type="number" name="quantite" id="qty" min="1" class="form-control" readonly>
                                             </div>
 
                                         </div>
@@ -222,4 +249,20 @@
         </main>
     </div>
 
+
+    <!-- Calcule Quantite par Carton/Sac -->
+    <script>
+        function calculerQuantite() {
+            let cartons = parseInt(document.getElementById('nb_conditions').value) || 0;
+            let unite = parseInt(document.getElementById('unites_par_condition').value) || 0;
+
+            document.getElementById('qty').value = cartons * unite;
+        }
+
+        document.getElementById('nb_conditions')
+            .addEventListener('input', calculerQuantite);
+
+        document.getElementById('unites_par_condition')
+            .addEventListener('input', calculerQuantite);
+    </script>
 @include('partials.footer')

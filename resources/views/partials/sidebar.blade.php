@@ -109,6 +109,13 @@
                     <div class="sidebar-divider"></div>
 
                     <li>
+                        <a href="{{ route('magasin.index') }}">
+                            <i class="fas fa-building"></i>
+                            <span>Magasins</span>
+                        </a>
+                    </li>
+
+                    <li>
                         <a href="{{ route('achats.index') }}">
                             <i class="fa-solid fa-bag-shopping"></i>
                             <span>Achat</span>
@@ -121,13 +128,6 @@
                             <i class="fas fa-list"></i>
                             <span>Bon de commande</span>
                             <span class="badge"></span>
-                        </a>
-                    </li>
-                     
-                    <li>
-                        <a href="{{ route('magasin.index') }}">
-                            <i class="fas fa-building"></i>
-                            <span>Magasins</span>
                         </a>
                     </li>
 

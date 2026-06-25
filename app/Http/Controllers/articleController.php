@@ -151,7 +151,7 @@ class articleController extends Controller
         Mouvement_stock::create([
             'article_id' => $articles->id,
             'type' => 'entree',
-            'quantite' => $qty ?? 100,
+            'quantite' => $qty,
             'magasin_id' => $request->magasin_id ?? null,
             'reference' => 'MVT-' . now()->timestamp,
         ]);
@@ -199,6 +199,9 @@ class articleController extends Controller
             'statut' ,
             'etiquette' ,
             'categorie_id' ,
+            'nb_conditions',
+            'unites_par_condition',
+            'type_conditionnement'
             
         ]);
        
@@ -219,34 +222,23 @@ class articleController extends Controller
         }
 
         // mise a jour de l'article
+        $qty= $request->nb_conditions * $request->unites_par_condition;
+
         $article->update([
             'nom' => $request->nom,
             'fournisseur_id' => $request->fournisseur_id ?? null,
             'description' => $request->description ?? null,
             'prix_achat' => $request->prix_vente,
             'prix_vente' => $request->prix_vente,
-            'stock' => $request->stock  ?? 100,
-            'stock_min' => $request->stock_min  ?? 20,
-            'categorie_id' => $request->categorie_id ?? null,
-            'magasin_id' => $request->magasin_id ?? null,
+            'stock' => $qty  ?? $article->stock,
+            'stock_min' => $request->stock_min  ?? $article->stock_min,
+            'categorie_id' => $request->categorie_id ?? $article->categorie_id,
+            'magasin_id' => $request->magasin_id ?? $article->magasin_id,
             'image' => $path ?? $article->image,
+            'nb_conditions' => $request->nb_conditions ?? $article->nb_conditions,
+            'unites_par_condition' => $request->unites_par_condition ?? $article->unites_par_condition,
+            'type_conditionnement' => $request->type_conditionnement ?? $article->type_conditionnement,
         ]);
-
-        // Creation de l'article dans le depot
-        $magasin = Magasin::where('id', $request->magasin_id)->lockForUpdate()->firstOrFail(); // verrou stock
-
-        // Mettre à jour le stock dans Article_depot 
-        $articleDepot = Article_depot::where('article_id', $article->id)->where('magasin_id', $magasin->id)->first();
-    
-        if ($articleDepot) {
-            $articleDepot->increment('stock', $request->stock  ?? 100);
-        } else {
-            Article_depot::create([
-                'article_id' => $article->id,
-                'magasin_id' => $magasin->d,
-                'stock' => $request->stock  ?? 100
-            ]);
-        }
 
 
         return redirect()->route('articles.index')->with('success', 'Article modifiée avec success.');

@@ -100,7 +100,7 @@
                                         <td><span class="badge-{{$a->statut ? 'success' : 'warning'}}">{{$a->statut ? 'Publié' : 'En attente'}}</span></td>
                                         <td>
                                             <div class="action-buttons">
-                                                <a href="" class="action-btn" title="Modifier"  data-bs-toggle="modal" data-id="{{ $a->id }}" data-name="{{ $a->nom }}" data-categorie="{{ $a->categorie_id }}" data-magasin="{{ $a->magasin_id }}" data-price="{{ $a->prix_vente }}" data-description="{{ $a->description }}" data-stock="{{ $a->stock }}" data-stock_min="{{ $a->stock_min }}" data-image="{{ asset('storage/'.$a->image) }}" data-bs-target="#articleEditModal">
+                                                <a href="" class="action-btn" title="Modifier"  data-bs-toggle="modal" data-id="{{ $a->id }}" data-name="{{ $a->nom }}" data-type_conditionnement="{{ $a->type_conditionnement }}" data-unites_par_condition="{{ $a->unites_par_condition }}" data-nb_conditions="{{ $a->nb_conditions }}" data-magasin="{{ $a->magasin_id }}" data-categorie="{{ $a->categorie_id }}" data-price="{{ $a->prix_vente }}" data-image="{{ asset('storage/'.$a->image) }}" data-bs-target="#articleEditModal">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
                                                 <form action="{{route('articles.destroy', $a->id)}}" type="button" method="post" onsubmit="return confirm('Supprimer ?')">
@@ -119,7 +119,7 @@
                             </table>
                             
                         </div>
-                        
+
                         <!-- Nouveau article -->
                         <div class="modal fade" id="articleModal" tabindex="-1">
                             <div class="modal-dialog">
@@ -259,7 +259,7 @@
                                             <div class="mb-3">
                                                 <label>Image</label>
                                                 <img src="image" id="image" width="100" alt="">
-                                                <input type="file" name="image" id="image" class="form-control">
+                                                
                                             </div>
 
                                             <div class="mb-3">
@@ -272,26 +272,38 @@
                                                 <input type="text" name="prix_vente" id="price" class="form-control">
                                             </div>
 
-                                            <div class="row">
+                                            <div class="mb-3">
+                                                <label>Type de conditionnement</label>
+                                                <select name="type_conditionnement" id="type_conditionnement" class="form-control">
+                                                    <option value="carton">Carton</option>
+                                                    <option value="sac">Sac</option>
+                                                    <option value="caisse">Caisse</option>
+                                                    <option value="bidon">Bidon</option>
+                                                    <option value="paquet">Paquet</option>
+                                                    <option value="autre">Autre</option>
+                                                </select>
+                                            </div>  
+
+                                            <!--<div class="row">
                                                 <div class="col-md-6">
                                                     <div class="mb-3">
-                                                        <label>Quantite de stock</label>
-                                                        <input type="number" name="stock" id="stock" class="form-control">
-                                                    </div>                                                    
+                                                        <label>Nombre de conditionnement</label>
+                                                        <input type="number" name="nb_conditions" id="nb_conditions" min="1" class="form-control">
+                                                    </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="mb-3">
-                                                        <label>Stock minimum</label>
-                                                        <input type="text" name="stock_min" id="stock_min" class="form-control">
-                                                    </div>                                                 
+                                                        <label>Unites par conditionnement</label>
+                                                        <input type="number" name="unites_par_condition" id="unites_par_condition" min="1" class="form-control">
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            </div>-->
 
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="mb-3">
                                                         <label>Categorie</label>
-                                                        <select name="article_id" class="form-control">
+                                                        <select name="" class="form-control">
                                                             @foreach($categorie as $c)
                                                                 <option value="{{ $c->id }}">{{ $c->nom }}</option>
                                                             @endforeach
@@ -319,10 +331,6 @@
                                                 </select>
                                             </div>             
 
-                                            <div class="mb-3">
-                                                <label>Description</label>
-                                                <textarea name="description" id="description" class="form-control"></textarea>
-                                            </div>
                                         </div>
 
                                         <div class="modal-footer">
@@ -340,7 +348,7 @@
 
 
     <!-- Donnees Formulaire Edit -->
-     <script>
+    <script>
         document.addEventListener('DOMContentLoaded', function () {
             const modal = document.getElementById('articleEditModal');
             const form = document.getElementById('editArticleForm');
@@ -352,23 +360,23 @@
                 const id = button.getAttribute('data-id');
                 const name = button.getAttribute('data-name');
                 const price = button.getAttribute('data-price');
-                const description = button.getAttribute('data-description');
-                const stock = button.getAttribute('data-stock');
-                const stock_min = button.getAttribute('data-stock_min');
                 const image = button.getAttribute('data-image');
                 const categorie_id = button.getAttribute('data-categorie');
                 const magasin_id = button.getAttribute('data-magasin');
+                const type_conditionnement = button.getAttribute('data-type_conditionnement');
+                const unites_par_condition = button.getAttribute('data-unites_par_condition');
+                const nb_conditions = button.getAttribute('data-nb_conditions');
                 
                 // Remplir le formulaire
                 modal.querySelector('#article_id').value = id;
                 modal.querySelector('#name').value = name;
                 modal.querySelector('#price').value = price;
-                modal.querySelector('#description').value = description;
-                modal.querySelector('#stock').value = stock;
-                modal.querySelector('#stock_min').value = stock_min;
                 modal.querySelector('#image').src = image;
                 modal.querySelector('#categorie_id').value = categorie_id;
                 modal.querySelector('#magasin_id').value = magasin_id;
+                modal.querySelector('#type_conditionnement').value = type_conditionnement;
+                modal.querySelector('#unites_par_condition').value = unites_par_condition;
+                modal.querySelector('#nb_conditions').value = nb_conditions;
                 
                 // Mettre à jour l'action du formulaire avec l'ID récupéré
                 const updateUrl = `/articles/${id}`;

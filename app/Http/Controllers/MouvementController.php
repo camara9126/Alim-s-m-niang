@@ -52,6 +52,9 @@ class MouvementController extends Controller
             'quantite' => 'required|integer|min:1',
             'type' => 'required',
             'magasin_id' =>'required',
+            'nb_conditions',
+            'unites_par_condition',
+            'type_conditionnement'
         ]);
 
         $article = Article::findOrFail($request->article_id);
@@ -63,6 +66,14 @@ class MouvementController extends Controller
             'magasin_id' => $request->magasin_id ?? null,
             'reference' => 'MVT-' . now()->timestamp,
         ]);
+
+        if(!$article->type_conditionnement) {
+                $article->update([
+                'nb_conditions' => $request->nb_conditions ,
+                'unites_par_condition' => $request->unites_par_condition ,
+                'type_conditionnement' => $request->type_conditionnement ,
+            ]);
+        }
 
 
         if($request->type == 'entree') {
