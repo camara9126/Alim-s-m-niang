@@ -60,9 +60,10 @@
                             <table>
                                 <thead>
                                     <tr>
-                                        <th style="background-color: #E5D8FF;">Image</th>
+                                        <!--<th style="background-color: #E5D8FF;">Image</th>-->
                                         <th style="background-color: #E5D8FF;">Code</th>
                                         <th style="background-color: #E5D8FF;">Produit</th>
+                                        <th style="background-color: #E5D8FF;">Conditionnement</th>
                                         <th style="background-color: #E5D8FF;">Catégorie</th>
                                         <th style="background-color: #E5D8FF;">Prix</th>
                                         <th style="background-color: #E5D8FF;">Stock</th>
@@ -74,18 +75,18 @@
                                 <tbody>
                                     @foreach($articles as $a)
                                     <tr>
-                                        <td>
+                                        <!--<td>
                                             <div class="product-info">
                                                 <img src="{{asset('storage/'. $a->image)}}" width="50" alt="">
                                             </div>
-                                        </td>
+                                        </td>-->
                                         <td>
                                             <div class="product-info">
                                                 <div style="font-weight: 600;">{{$a->code}}</div>
-                                                <!--<div style="font-size: 0.85rem; color: var(--gray-600);">GBH 2-26</div>-->
                                             </div>
                                         </td>
                                         <td>{{$a->nom}}</td>
+                                        <td>{{strtoupper($a->type_conditionnement)}}</td>
                                         <td>{{$a->categorie->nom ?? '-'}}</td>
                                         <td><strong>{{$a->prix_vente}} FCFA</strong></td>
                                         <td>
@@ -118,6 +119,7 @@
                             </table>
                             
                         </div>
+                        
                         <!-- Nouveau article -->
                         <div class="modal fade" id="articleModal" tabindex="-1">
                             <div class="modal-dialog">
@@ -131,51 +133,73 @@
 
                                         <div class="modal-body">
 
-                                            <div class="mb-3">
+                                            <!--<div class="mb-3">
                                                 <label>Image</label>
                                                 <input type="file" name="image" class="form-control">
+                                            </div>-->
+
+                                            <div class="mb-3">
+                                                <label>Nom article</label>
+                                                <input type="text" name="nom" class="form-control" required>
                                             </div>
 
                                             <div class="mb-3">
-                                                <label>Nom de l'article</label>
-                                                <input type="text" name="nom" class="form-control" required>
-                                            </div>
-                                        
+                                                <label>Magasin</label>
+                                                <select name="magasin_id" class="form-control">
+                                                        <option value="">-- Selectionner --</option>
+                                                    @foreach($magasin as $m)
+                                                        <option value="{{ $m->id }}">{{ $m->nom }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>   
+
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="mb-3">
-                                                        <label>Prix</label>
-                                                        <input type="text" name="prix_vente" class="form-control">
+                                                        <label>Prix Achat</label>
+                                                        <input type="number" name="prix_achat" class="form-control">
                                                     </div>
                                                    
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="mb-3">
-                                                        <label>Magasin</label>
-                                                        <select name="magasin_id" class="form-control">
-                                                                <option value="">-- Selectionner --</option>
-                                                            @foreach($magasin as $m)
-                                                                <option value="{{ $m->id }}">{{ $m->nom }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>         
+                                                        <label>Prix Vente (par unite)</label>
+                                                        <input type="number" name="prix_vente" class="form-control">
+                                                    </div>  
                                                 </div>
                                             </div>
+
+                                            <div class="mb-3">
+                                                <label>Type de conditionnement</label>
+                                                <select name="type_conditionnement" class="form-control">
+                                                    <option value="carton">Carton</option>
+                                                    <option value="sac">Sac</option>
+                                                    <option value="caisse">Caisse</option>
+                                                    <option value="bidon">Bidon</option>
+                                                    <option value="paquet">Paquet</option>
+                                                    <option value="autre">Autre</option>
+                                                </select>
+                                            </div>  
 
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="mb-3">
-                                                        <label>Quantite de stock</label>
-                                                        <input type="number" name="stock" class="form-control">
+                                                        <label>Nombre de conditionnement</label>
+                                                        <input type="number" name="nb_conditions" id="nb_conditions" min="1" class="form-control">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="mb-3">
-                                                        <label>Stock Minimum</label>
-                                                        <input type="number" name="stock_min" class="form-control">
+                                                        <label>Unites par conditionnement</label>
+                                                        <input type="number" name="unites_par_condition" id="unites_par_condition" min="1" class="form-control">
                                                     </div>
                                                 </div>
                                             </div>
+
+                                            <div class="mb-3">
+                                                <label>Quantite Totale</label>
+                                                <input type="number" name="stock" id="qty" class="form-control" readonly>
+                                            </div>   
 
                                             <div class="row">
                                                 <div class="col-md-6">
@@ -202,11 +226,6 @@
                                                         </select>
                                                     </div>                                                    
                                                 </div>  
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label>Description</label>
-                                                <textarea name="description"  class="form-control"></textarea>
                                             </div>
                                         </div>
 
@@ -319,6 +338,8 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
+
+    <!-- Donnees Formulaire Edit -->
      <script>
         document.addEventListener('DOMContentLoaded', function () {
             const modal = document.getElementById('articleEditModal');
@@ -354,6 +375,23 @@
                 form.action = updateUrl;
             });
         });
+    </script>
+
+
+    <!-- Calcule Quantite par Carton/Sac -->
+    <script>
+        function calculerQuantite() {
+            let cartons = parseInt(document.getElementById('nb_conditions').value) || 0;
+            let unite = parseInt(document.getElementById('unites_par_condition').value) || 0;
+
+            document.getElementById('qty').value = cartons * unite;
+        }
+
+        document.getElementById('nb_conditions')
+            .addEventListener('input', calculerQuantite);
+
+        document.getElementById('unites_par_condition')
+            .addEventListener('input', calculerQuantite);
     </script>
 
 @include('partials.footer')

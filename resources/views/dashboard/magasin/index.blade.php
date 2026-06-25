@@ -48,7 +48,7 @@
                     
                     <div class="card-body">
                         <div class="table-responsive">
-                               <table class="">
+                                <table class="">
                                     <thead>
                                         <tr>
                                             <th>ID</th>
@@ -87,7 +87,8 @@
                                         </tr>
                                         @endforelse
                                     </tbody>
-                                </table>  
+                                </table> 
+
                             <div class="d-flex justify-content-center mt-4">
                                 {{$magasins->links()}}
                             </div>

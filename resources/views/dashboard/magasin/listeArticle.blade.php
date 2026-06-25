@@ -1,3 +1,9 @@
+<?php
+
+use App\Models\Article;
+
+    $sommes= Article::sum('prix_vente');
+?>
 @include('partials.header')
     <div class="dashboard">
         <!-- Sidebar -->
@@ -46,13 +52,17 @@
                     @endif
 
                     <div class="card-body">
+                        <div class="row">
+                            <h5>Somme Totale: {{ number_format($sommes, '0', ',', ' ') }} FCFA</h5>
+                        </div>
                         <div class="table-responsive">
                             <table>
                                 <thead>
                                     <tr>
-                                        <th>Image</th>
+                                        <!--<th>Image</th>-->
                                         <th>Code</th>
                                         <th>Produit</th>
+                                        <th>Conditionnement</th>
                                         <th>Catégorie</th>
                                         <th>Prix</th>
                                         <th>Stock</th>
@@ -63,11 +73,11 @@
                                 <tbody>
                                     @foreach($articles as $a)
                                     <tr>
-                                        <td>
+                                        <!--<td>
                                             <div class="product-info">
                                                 <img src="{{asset('storage/'. $a->image)}}" width="50" alt="">
                                             </div>
-                                        </td>
+                                        </td>-->
                                         <td>
                                             <div class="product-info">
                                                 <div style="font-weight: 600;">{{$a->code}}</div>
@@ -75,8 +85,9 @@
                                             </div>
                                         </td>
                                         <td>{{$a->nom}}</td>
+                                        <td>{{strtoupper($a->type_conditionnement)}}</td>
                                         <td>{{$a->categorie->nom ?? '-'}}</td>
-                                        <td><strong>{{$a->prix}} FCFA</strong></td>
+                                        <td><strong>{{$a->prix_vente}} FCFA</strong></td>
                                         <td>
                                             @if($a->stock_min >= $a->stock)
                                                 <span class="badge bg-danger">Stock faible</span>

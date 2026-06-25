@@ -202,5 +202,13 @@ Route::middleware('auth')->group(function () {
 
 });
 
+// Route Inventaire
+Route::get('/inventaire', function() {
+    $magasins= Magasin::with('stock')->latest()->paginate(50);
+
+    return view('dashboard.articles.inventaire', compact('magasins'));
+    
+})->name('inventaires');
+
 
 require __DIR__.'/auth.php';

@@ -22,6 +22,9 @@ class Article extends Model
         'stock_min',
         'categorie_id',
         'statut',
+        'nb_conditions',
+        'unites_par_condition',
+        'type_conditionnement'
     ];
 
 

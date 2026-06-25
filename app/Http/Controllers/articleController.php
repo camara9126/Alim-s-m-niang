@@ -81,6 +81,9 @@ class articleController extends Controller
             'categorie_id',
             'categorie' ,
             'fournisseur' ,
+            'nb_conditions',
+            'unites_par_condition',
+            'type_conditionnement'
             
         ]);
 
@@ -114,6 +117,8 @@ class articleController extends Controller
 
         }
         // creation de l'article
+        $qty= $request->nb_conditions * $request->unites_par_condition;
+
         $articles= Article::create([
             'nom' => $request->nom,
             'description' => $request->description ?? null,
@@ -121,14 +126,17 @@ class articleController extends Controller
             'prix_vente' => $request->prix_vente,
             'code' => $this->generateCode(),
             'reference' => 'REF-' . now()->timestamp,
-            'stock' => $request->stock  ?? 100,
+            'stock' => $qty  ?? 100,
             'stock_min' => $request->stock_min ?? 10,
             'fournisseur_id' => $request->fournisseur_id ?? $fournisseur->id,
             'categorie_id' => $request->categorie_id ?? $categorie->id,
             'magasin_id' => $request->magasin_id ?? null,
             'image' => $path ?? $entreprise->logo,
+            'nb_conditions' => $request->nb_conditions,
+            'unites_par_condition' => $request->unites_par_condition,
+            'type_conditionnement' => $request->type_conditionnement,
         ]);
-
+//dd($articles);
 
         // Creation de l'article dans le depot
         $magasin = Magasin::where('id', $request->magasin_id)->lockForUpdate()->firstOrFail(); // verrou stock
@@ -136,14 +144,14 @@ class articleController extends Controller
         Article_depot::create([
             'article_id' => $articles->id,
             'magasin_id' => $magasin->id,
-            'stock' => $request->stock,
+            'stock' => $qty,
         ]);
 
         // Enregistrement d'un historique de mouvement
         Mouvement_stock::create([
             'article_id' => $articles->id,
             'type' => 'entree',
-            'quantite' => $request->stock ?? 100,
+            'quantite' => $qty ?? 100,
             'magasin_id' => $request->magasin_id ?? null,
             'reference' => 'MVT-' . now()->timestamp,
         ]);

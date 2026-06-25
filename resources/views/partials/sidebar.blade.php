@@ -49,9 +49,9 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('categorie.index') }}">
+                        <a href="{{ route('inventaires') }}">
                             <i class="fas fa-tags"></i>
-                            <span>Catégories</span>
+                            <span>Inventaires</span>
                             <span class="badge"></span>
                         </a>
                     </li>
