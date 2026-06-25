@@ -364,8 +364,8 @@
                 const categorie_id = button.getAttribute('data-categorie');
                 const magasin_id = button.getAttribute('data-magasin');
                 const type_conditionnement = button.getAttribute('data-type_conditionnement');
-                const unites_par_condition = button.getAttribute('data-unites_par_condition');
-                const nb_conditions = button.getAttribute('data-nb_conditions');
+                //const unites_par_condition = button.getAttribute('data-unites_par_condition');
+                // const nb_conditions = button.getAttribute('data-nb_conditions');
                 
                 // Remplir le formulaire
                 modal.querySelector('#article_id').value = id;
@@ -375,8 +375,8 @@
                 modal.querySelector('#categorie_id').value = categorie_id;
                 modal.querySelector('#magasin_id').value = magasin_id;
                 modal.querySelector('#type_conditionnement').value = type_conditionnement;
-                modal.querySelector('#unites_par_condition').value = unites_par_condition;
-                modal.querySelector('#nb_conditions').value = nb_conditions;
+                // modal.querySelector('#unites_par_condition').value = unites_par_condition;
+                // modal.querySelector('#nb_conditions').value = nb_conditions;
                 
                 // Mettre à jour l'action du formulaire avec l'ID récupéré
                 const updateUrl = `/articles/${id}`;
