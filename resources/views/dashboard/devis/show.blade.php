@@ -73,7 +73,7 @@
 
                             <!-- CLIENT -->
                             <div class="mb-4">
-                                @if($devis->client->nom !== 'Anonyme')
+                                @if($devis->client !== null)
                                     <h5>Client</h5>
                                     <p>Nom : {{ $devis->client->nom }}</p>
                                     <p>Téléphone : {{ $devis->client->telephone ?? '-' }}</p>
