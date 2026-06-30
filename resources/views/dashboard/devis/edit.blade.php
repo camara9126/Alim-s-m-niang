@@ -60,7 +60,9 @@
     <div class="mb-3">
         <label>Client</label>
         <select name="client_id" class="form-control" required>
-            <option value="{{$devis->client->id}}">{{$devis->client->nom}}</option>
+            @if($devis->client !== null)
+                <option value="{{$devis->client->id}}">{{$devis->client->nom}}</option>
+            @endif
             @foreach($clients as $client)
                 <option value="{{ $client->id }}">{{ $client->nom }}</option>
             @endforeach
